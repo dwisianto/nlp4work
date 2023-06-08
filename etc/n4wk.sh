@@ -8,7 +8,7 @@
 #
 branch_id=101
 declare -A branches=(
-	[101new]=n4wk_dev_may4
+	[101new]=wk_dev_june6
 	[101old]=dev
     [101dev]=dev
 	[101raw]=main
@@ -16,24 +16,45 @@ declare -A branches=(
     [101etc]=etc
     [101wiki]=wiki
 )
-origin_new=${branches[${branch_id}old]}
-sandbox_new=${branches[${branch_id}new]}
 
-origin_dev=${branches[${branch_id}dev]}
-sandbox_dev=${origin_dev}
+#origin_new=${branches[${branch_id}old]}
+#sandbox_new=${branches[${branch_id}new]}
 
-origin_raw=${branches[${branch_id}raw]}
-sandbox_raw=${origin_raw}
+#origin_dev=${branches[${branch_id}dev]}
+#sandbox_dev=${origin_dev}
 
-origin_acd=${branches[${branch_id}acd]}
-sandbox_acd=${origin_acd}
+#origin_raw=${branches[${branch_id}raw]}
+#sandbox_raw=${origin_raw}
 
-origin_etc=${branches[${branch_id}etc]}
-sandbox_etc=${origin_etc}
+#origin_acd=${branches[${branch_id}acd]}
+#sandbox_acd=${origin_acd}
 
+#origin_etc=${branches[${branch_id}etc]}
+#sandbox_etc=${origin_etc}
 
-origin_wiki=${branches[${branch_id}wiki]}
-sandbox_wiki=${origin_wiki}
+#origin_wiki=${branches[${branch_id}wiki]}
+#sandbox_wiki=${origin_wiki}
+
+declare -A origin=(
+	[new]=${branches[${branch_id}old]}
+	[old]=${branches[${branch_id}old]}
+    [raw]=${branches[${branch_id}raw]}
+    [dev]=${branches[${branch_id}dev]}
+    [acd]=${branches[${branch_id}acd]}
+    [etc]=${branches[${branch_id}etc]}
+    [wiki]=${branches[${branch_id}wiki]}
+)
+
+declare -A sandbox=(
+	[new]=${branches[${branch_id}new]}
+	[old]=${branches[${branch_id}old]}
+    [raw]=${branches[${branch_id}raw]}
+    [dev]=${branches[${branch_id}dev]}
+    [acd]=${branches[${branch_id}acd]}
+	[etc]=${branches[${branch_id}etc]}
+    [wiki]=${branches[${branch_id}wiki]}
+)
+
 
 #
 #
@@ -43,24 +64,6 @@ git_repo=$n4wk_repo
 git_wiki='https://github.com/dwisianto/nlp4work.wiki.git'
 
 
-n4_ops(){
-    uid=${FUNCNAME[0]}
-
-    sandbox_name="n4wk"
-    dev_uid="dev"
-    echo "rm -rf $sandbox_name && mkdir ${sandbox_name}"
-    echo "cd ${sandbox_name} && git clone ${git_repo} --branch ${dev_uid} --single-branch ds_${dev_uid}"
-}
-
-n4_wiki(){
-    uid=${FUNCNAME[0]}
-
-    sandbox_name="n4wk"
-    dev_uid="dev"
-    echo "rm -rf $sandbox_name && mkdir ${sandbox_name}"
-    echo "cd ${sandbox_name} && git clone ${git_repo} --branch ${dev_uid} --single-branch ds_${dev_uid}"
-
-}
 
 
 
@@ -74,38 +77,57 @@ n4(){
             echo " # id        : ${id} "
             echo " # repo      : ${git_repo}"
             echo " # "
-            echo " # origin_new : <${origin_new}>"
-            echo -n " # sandbox_new : <${sandbox_new}>" && [ -d ${sandbox_new} ] && echo "[exist]" || echo "[missing]"
+            echo " # origin_new : <${origin[new]}>"
+            echo -n " # sandbox_new : <${sandbox[new]}>" && [ -d ${sandbox[new]} ] && echo "[exist]" || echo "[missing]"
             echo " # "
-            echo " # origin_raw : <${origin_raw}>"
-            echo " # sandbox_raw : <${sandbox_raw}>"
+            echo " # origin_old : <${origin[old]}>"
+            echo " # sandbox_old : <${sandbox[old]}>"
             echo " # "
-            echo " # origin_wiki : <${origin_wiki}>"
-            echo " # sandbox_wiki : <${sandbox_wiki}>"
+            echo " # origin_wiki : <${origin[wiki]}>"
+            echo " # sandbox_wiki : <${sandbox[wiki]}>"
             echo " # "
             ;;
         ${id}- )
-            rm -rf ${sandbox_new} && mkdir ${sandbox_new}
-            cd ${sandbox_new} && git clone ${git_repo} ${sandbox_new} && cd .. 
-            cd ${sandbox_new} && git clone --branch ${origin_etc} --single-branch ${git_repo} ${sandbox_etc} && cd ..		    
-            cd ${sandbox_new} && git clone --branch ${origin_dev} --single-branch ${git_repo} ${sandbox_dev} && cd .. 
-            #cd ${sandbox_new} && \
-            #git checkout ${origin_new} && \
-            #git checkout -b ${sandbox_new} ${origin_new} && \
-            #git push --set-upstream origin ${sandbox_new} && \
-            #cd .. && \
-            #cd ..
+            rm -rf ${sandbox[new]} && mkdir ${sandbox[new]}
+
+            cd ${sandbox[wiki]} && git clone --branch ${origin[wiki]} --single-branch ${wiki[repo]} ${sandbox[wiki]} && cd ..
+            cd ${sandbox[new]} && git clone --branch ${origin[etc]} --single-branch ${git_repo} ${sandbox[etc]} && cd ..		    
+            cd ${sandbox[new]} && git clone --branch ${origin[dev]} --single-branch ${git_repo} ${sandbox[dev]} && cd .. 
+
+            cd ${sandbox[new]} && \
+            git clone ${git_repo} ${sandbox[new]} && \ 
+            cd ${sandbox[new]} && \
+            git checkout -b ${sandbox[new]} ${origin[new]} && \
+            git push --set-upstream origin ${sandbox[new]} && \
+            cd .. && \
+            cd ..
             ;;
     esac
 }
 
 
+gt_br_orphan(){
+    id=${FUNCNAME[0]}
+
+    case "$@" in
+        ${id} )
+        echo "git switch --orphan a_branch_name" 
+        ;;
+    esac
+}
+
 
 
 main(){
+
+    #echo ${origin[new]}
+    #echo ${origin[old]}    
+    #echo ${origin[wiki]}
+
+    #echo ${sandbox[old]}
+    #echo ${sandbox[new]}
+
     n4 "$@"
-    #n4_ops "$@"
-    #n4_wiki "$@"
 }
 
 main "$@"
