@@ -1,0 +1,7 @@
+export FLASK_APP=app
+export FLASK_ENV=development
+export DATABASE_URL=sqlite:///${PWD}/app__/app.db
+export SECRET_KEY=secret_key_change_as_you_wish_make_it_long_123
+
+echo FLASK_APP: ${FLASK_APP}
+echo FLASK_ENV: ${FLASK_ENV}
