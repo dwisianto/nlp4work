@@ -1,0 +1,16 @@
+# 
+flask
+python-dotenv
+# form
+flask-wtf
+#
+flask-sqlalchemy
+flask-migrate
+#
+flask-login
+email-validator
+# 
+dash
+dash-html-components
+dash-core-components
+pandas-datareader
