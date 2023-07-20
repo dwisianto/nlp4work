@@ -26,16 +26,21 @@ def register_callbacks(current_app):
         else:
             return f'Username: {data}'
 
-
+    # State('input-on-submit', 'data')
+    #def update_graph(selected_dropdown_value, value, data):
     @current_app.callback(
         Output('my_data_table', 'children'),
-        Input('submit-val', 'value'),
-        State('input-on-submit', 'data'))
-    def update_graph(selected_dropdown_value, value, data):
-    
-        df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
-    
-        return dash_table.DataTable(df.to_dict('records'))
+        Input('submit-val', 'n_clicks'),
+        )
+    def update_graph(n_clicks):
+        
+        out_data_table = None
+        if n_clicks >= 1:
+            df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
+            out_data_table = dash_table.DataTable(df.to_dict('records'))
+        
+        return out_data_table
+        #return(n_clicks)
 
     #@current_app.callback(
     #    Output('my_data_table', 'children'),

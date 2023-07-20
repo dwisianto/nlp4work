@@ -1,22 +1,29 @@
 
-import dash
 
+#
+#
+#
 from flask import Flask
 from flask.helpers import get_root_path
 from flask_login import login_required
+
+import dash
+import dash_bootstrap_components as dbc
 
 from my_cfg import BaseConfig
 
 
 def create_app():
-    server = Flask(__name__, template_folder="template/t1")
+    server = Flask(__name__, template_folder="template/t2")
     server.config.from_object(BaseConfig)
     server.testing = True #return a test_client inside a pytest case
 
-    register_dash1(server)
-    register_dash2(server)
     register_extensions(server)
     register_blueprints(server)
+    register_board0(server)
+    register_board1(server)
+    register_board2(server)
+    register_board3(server)
 
     return server
 
@@ -50,22 +57,45 @@ def _protect_dashviews(dashapp):
             dashapp.server.view_functions[view_func] = login_required(
                 dashapp.server.view_functions[view_func])
 
-
-def register_dash1(app):
-    from app.board.b1.layout import layout
-    from app.board.b1.callbacks import register_callbacks
-
-    # Meta tags for viewport responsiveness
-    meta_viewport = {
+# Meta tags for viewport responsiveness
+_meta_viewport = {
         "name": "viewport",
         "content": "width=device-width, initial-scale=1, shrink-to-fit=no"}
+
+
+def register_board0(app):
+    from app.board.b0.layout import layout
+    from app.board.b0.callbacks import register_callbacks
+
+    board0_name='board0'
+    board0 = dash.Dash(__name__,
+                        server=app,
+                        url_base_pathname='/'+board0_name+'/',
+                        assets_folder=get_root_path(__name__) + '/'+board0_name+'/assets/',
+                        meta_tags=[_meta_viewport],
+                        external_stylesheets=[dbc.themes.BOOTSTRAP],
+    )
+
+    with app.app_context():
+        board0.title = board0_name
+        board0.layout = layout
+        register_callbacks(board0)
+
+    _protect_dashviews(board0)
+
+
+def register_board1(app):
+    from app.board.b1.layout import layout
+    from app.board.b1.callbacks import register_callbacks
 
     board1_name='board1'
     board1 = dash.Dash(__name__,
                         server=app,
                         url_base_pathname='/'+board1_name+'/',
                         assets_folder=get_root_path(__name__) + '/'+board1_name+'/assets/',
-                        meta_tags=[meta_viewport])
+                        meta_tags=[_meta_viewport],
+                        external_stylesheets=[dbc.themes.BOOTSTRAP],
+    )
 
     with app.app_context():
         board1.title = board1_name
@@ -77,23 +107,19 @@ def register_dash1(app):
 
 
 
-def register_dash2(app):
+def register_board2(app):
 
     from app.board.b2.layout import layout
     from app.board.b2.callbacks import register_callbacks
-
-    # Meta tags for viewport responsiveness
-    meta_viewport = {
-        "name": "viewport",
-        "content": "width=device-width, initial-scale=1, shrink-to-fit=no"
-        }
 
     board2_name='board2'
     board2 = dash.Dash(__name__,
                          server=app,
                          url_base_pathname='/'+board2_name+'/',
                          assets_folder=get_root_path(__name__) + '/'+board2_name+'/assets/',
-                         meta_tags=[meta_viewport])
+                         meta_tags=[_meta_viewport],
+                         external_stylesheets=[dbc.themes.BOOTSTRAP],
+    )
 
     with app.app_context():
         board2.title = board2_name
@@ -101,3 +127,25 @@ def register_dash2(app):
         register_callbacks(board2)
 
     _protect_dashviews(board2)
+
+
+def register_board3(app):
+
+    from app.board.b3.layout import layout
+    from app.board.b3.callbacks import register_callbacks
+
+    board_name='board3'
+    board = dash.Dash(__name__,
+                         server=app,
+                         url_base_pathname='/'+board_name+'/',
+                         assets_folder=get_root_path(__name__) + '/'+board_name+'/assets/',
+                         meta_tags=[_meta_viewport],
+                         external_stylesheets=[dbc.themes.BOOTSTRAP],
+    )
+
+    with app.app_context():
+        board.title = board_name
+        board.layout = layout
+        register_callbacks(board)
+
+    _protect_dashviews(board)

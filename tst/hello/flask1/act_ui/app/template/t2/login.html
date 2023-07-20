@@ -1,11 +1,8 @@
-
-{% extends "navigation.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 
-
-<h1>Sign In</h1>
-
+<h1> {{title }} </h1>
 
 <form action="" method="post" novalidate>
   {{ form.hidden_tag() }}
@@ -17,11 +14,11 @@
     {{ form.password.label }}<br>
     {{ form.password(size=32) }}<br>
   </p>
-  <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+  <!-- <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p> -->
   <p>{{ form.submit() }}</p>
   {% if error %}
   <p class="error"><strong>Error:</strong> {{ error }}
-    {% endif %}
+  {% endif %}
 </form>
 
 {% endblock %}

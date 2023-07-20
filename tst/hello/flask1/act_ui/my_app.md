@@ -1,4 +1,9 @@
 
+## 2023-07-18
+- Reading sqlite with sqlalchemy
+- https://realpython.com/python-sqlite-sqlalchemy/
+- https://stackoverflow.com/questions/58896928/how-to-connect-to-sqlite-from-sqlalchemy
+
 ## 2023-07-14
 - sqlalchemy and oracle
 - https://stackoverflow.com/questions/28453545/connecting-to-an-oracle-database-using-sqlalchemy

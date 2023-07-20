@@ -1,37 +1,18 @@
-{% from 'bootstrap4/form.html' import render_form %}
+{% extends 'base.html' %}
 
-<!doctype html>
-<html lang="en">
-    <head>
-        {% block head %}
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        {% block styles %}
-            <!-- Bootstrap CSS -->
-            {{ bootstrap.load_css() }}
-        {% endblock %}
+{% block content %}
 
-        <title>My Title</title>
-        {% endblock %}
-    </head>
-    <body>
+<h1>Bootstrap-Flask Demo Application</h1>
+<p>This demo uses Bootstrap version 4.</p>
 
-        {% extends "navigation.html" %}
+{% if current_user.is_anonymous %}
+    <h1>Hello!</h1>
+    <ul>
+    <li><a href="{{ url_for('main.test_form') }}">Form</a></li>
+    </ul>
+  {% else  %}
+  <h1>Hi, {{ current_user.username }}!</h1>
+{% endif %}
+{% endblock %}
 
-        {% block content %}
-        {% if current_user.is_anonymous %}
-          <h1>Hello!</h1>
-        {% else  %}
-          <h1>Hi, {{ current_user.username }}!</h1>
-        {% endif %}
-        {% endblock %}        
-        
-
-        {% block scripts %}
-            <!-- Optional JavaScript -->
-            {{ bootstrap.load_js() }}
-        {% endblock %}
-    </body>
-</html>
