@@ -3,7 +3,8 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
-from flask import flash
+#from flask import flash
+from flask import session # flask-login timeout
 from flask_login import current_user
 from flask_login import login_required
 from flask_login import login_user
@@ -15,15 +16,22 @@ from app.forms import LoginForm
 from app.forms import RegistrationForm
 from app.models import User
 
+from my_cfg import my_log
+
+
 server_bp = Blueprint('main', __name__)
+
 
 @server_bp.route('/')
 def index():
+    session.permanent = True
+    my_log.info('server_bp_route_slash')
     #return render_template("index.html", title='Home Page')
     return redirect(url_for('/board0/'))
 
 @server_bp.route('/login/', methods=['GET', 'POST'])
 def login():
+    my_log.info('login'+str(current_user))
     if current_user.is_authenticated:        
         return redirect(url_for('/board0/')) #redirect(url_for('main.index'))
 
@@ -46,6 +54,7 @@ def login():
 @server_bp.route('/logout/')
 @login_required
 def logout():
+    my_log.info('logging_out ')
     logout_user()
     return redirect(url_for('/board0/')) #redirect(url_for('main.index'))
 

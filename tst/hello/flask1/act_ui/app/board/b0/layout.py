@@ -13,5 +13,7 @@ layout = html.Div(id='main', children=[
     html.H1(id='username'),
     html.Div(dcc.Input(id='input-on-submit', type='text')),   
     html.Button('Submit', id='submit-val', n_clicks=0),
+    html.H1('Data Table'),
+    html.H1(id='my_data_table'),
     dcc.Store(id='user-store'),
 ], style={'width': '500'})

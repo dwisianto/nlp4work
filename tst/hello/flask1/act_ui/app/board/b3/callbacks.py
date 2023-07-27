@@ -55,3 +55,13 @@ def register_callbacks(current_app):
     #    out_data_table = dash_table.DataTable(df.to_dict('records'))
     #    out_msg = 'The query is "{}" and the button has been clicked {} times'.format(value,n_clicks)
     #    return out_data_table, out_msg
+
+
+    @current_app.callback(
+        Output('textarea-state-example-output', 'children'),
+        Input('textarea-state-example-button', 'n_clicks'),
+        State('textarea-state-example', 'value')
+    )
+    def update_output(n_clicks, value):
+        if n_clicks > 0:
+            return 'You have entered: \n{}'.format(value)

@@ -10,14 +10,19 @@ from flask_login import login_required
 import dash
 import dash_bootstrap_components as dbc
 
-from my_cfg import BaseConfig
+from my_cfg import MyConfigObject, my_log
 
 
 def create_app():
     server = Flask(__name__, template_folder="template/t2")
-    server.config.from_object(BaseConfig)
+    server.config.from_object(MyConfigObject)
     server.testing = True #return a test_client inside a pytest case
 
+    # [] logging
+    server.logger.addHandler(my_log)
+    server.logger.info("create_app")
+   
+    # [] extension
     register_extensions(server)
     register_blueprints(server)
     register_board0(server)
@@ -36,6 +41,7 @@ def register_extensions(server):
     from app.extensions import migrate
     from app.extensions import bootstrap
 
+    server.logger.info("registering_extension")
     db.init_app(server)
     login.init_app(server)
     login.login_view = 'main.login'

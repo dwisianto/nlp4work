@@ -25,7 +25,6 @@ class FlaskCli:
     def run_cmd( app, cmd, work_dir):
         """Run a command and return a tuple with (stdout, stderr, exit_code)"""
         os.environ['FLASK_APP'] = app
-        #os.environ['DATABASE_URL']='sqlite:////Users/dwyk/d2/s3/m8/ghub/n4wk6/wk_dev_june6/nlp4work/tst/hello/flask1/migrations_db.sqlite'
         
         process = subprocess.Popen(shlex.split(cmd), 
         stdout=subprocess.PIPE,
@@ -42,7 +41,7 @@ class FlaskCli:
 #
 #
 #
-#@pytest.mark.skip()
+# @pytest.mark.skip()
 class TestFlaskMigration:
 
     MY_UI_DIR='act_ui'
@@ -50,124 +49,166 @@ class TestFlaskMigration:
     MY_DB_DIR='migrations'
     MY_APP_PY='my_app.py'
     
-    MY_WORK_DIR_FULL=os.path.dirname(os.path.realpath(__file__))
-    MY_UI_DIR_FULL=os.path.join(MY_WORK_DIR_FULL,'..','act_ui')
-
 
     #@pytest.mark.skip()
     @pytest.mark.order(102)
     def test_flask_migration_m102_config(self, my_config, act_config):
         LOG.info(" my_config ")
+
         LOG.info(pp.pformat(my_config))
-        # LOG.info(pp.pformat(act_config))
+        LOG.info(pp.pformat(act_config))
+        #LOG.info(self.MY_WORK_DIR_FULL)
+        #LOG.info(self.MY_UI_DIR_FULL)
         LOG.info(str(act_config))
         LOG.info(pp.pformat(str(act_config)))
-        LOG.info(self.MY_WORK_DIR_FULL)
-        LOG.info(self.MY_UI_DIR_FULL)
+    
 
-    # @pytest.mark.skip()
+        act_dir_ts=os.path.join(my_config['act_dir'],'act_ts')
+        act_dir_ui=os.path.join(my_config['act_dir'],'act_ui')
+        LOG.info(act_dir_ts)
+        LOG.info(act_dir_ui)
+
+        os.chdir(act_dir_ui)
+        tmp_db_sqlite=os.path.join(act_dir_ui,self.MY_DB_SQLITE)
+        tmp_db_dir=os.path.join(act_dir_ui,self.MY_DB_DIR)
+
+        if os.path.exists(tmp_db_sqlite):
+            LOG.info("Delete:"+tmp_db_sqlite)
+            try:
+                os.remove(tmp_db_sqlite)
+            except OSError:
+                LOG.error(tmp_db_sqlite)
+                pass
+        else:
+            LOG.info("Missing:"+tmp_db_sqlite)
+
+        if os.path.exists(tmp_db_dir):
+            LOG.info("Delete:"+tmp_db_dir)
+            try:
+                shutil.rmtree(tmp_db_dir)
+            except OSError:
+                LOG.error(tmp_db_dir)
+                pass
+        else:
+            LOG.info("Missing:"+tmp_db_dir)
+
+    #@pytest.mark.skip()
     @pytest.mark.order(103)
-    def test_flask_migration_m103_preparation(self, my_config, act_config):     
+    def test_flask_migration_m103_run_cmd(self, my_config, act_config):     
 
-        os.chdir(self.MY_WORK_DIR)
-        tmp_db_sqlite=os.path.join(self.MY_WORK_DIR,self.MY_DB_SQLITE)
-        tmp_db_dir=os.path.join(self.MY_WORK_DIR,self.MY_DB_DIR)
 
-        try:
-            os.remove(tmp_db_sqlite)
-        except OSError:
-            LOG.error(tmp_db_sqlite)
-            pass
+        act_dir_ts=os.path.join(my_config['act_dir'],'act_ts')
+        act_dir_ui=os.path.join(my_config['act_dir'],'act_ui')
+        LOG.info(act_dir_ts)
+        LOG.info(act_dir_ui)
 
-        try:
-            shutil.rmtree(tmp_db_dir)
-        except OSError:
-            LOG.error(tmp_db_dir)
-            pass
+
+        a_cmd='flask db init'
+        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, act_dir_ui)
+        a_cmd='flask db check'
+        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, act_dir_ui)
+
+        a_cmd='flask db migrate'
+        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, act_dir_ui)
+        a_cmd='flask db check'
+        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, act_dir_ui)
+
+        a_cmd='flask db upgrade'
+        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, act_dir_ui)
+        a_cmd='flask db check'
+        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, act_dir_ui)
+        #.assertTrue(s == 0)
+
+
+
 
 
     #@pytest.mark.skip()
     @pytest.mark.order(104)
-    def test_flask_migration_m104_run_cmd(self, my_config, act_config):     
-        
-        a_cmd='flask db init'
-        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, self.MY_UI_DIR_FULL)
-        # assertTrue(s == 0)
-        a_cmd='flask db check'
-        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, self.MY_UI_DIR_FULL)
-        # assertTrue(s == 0)
+    def test_flask_migration_m104_query_user_and_post(self):
 
-        a_cmd='flask db migrate'
-        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, self.MY_UI_DIR_FULL)
-        #.assertTrue(s == 0)
-        a_cmd='flask db check'
-        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, self.MY_UI_DIR_FULL)
-        #.assertTrue(s == 0)
+        #
+        #
+        #
+        from app import create_app
+        app = create_app()
+        from app.extensions import db
+        from app.models import User, Post
+        with app.app_context():
+            db.engine.dispose()
+            u = User(username='admin')#, email='admin@example.com')
+            u.set_password('admin')
+            db.session.add(u)
+            db.session.commit()
 
-        a_cmd='flask db upgrade'
-        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, self.MY_UI_DIR_FULL)
-        #.assertTrue(s == 0)
-        a_cmd='flask db check'
-        (o, e, s) = FlaskCli.run_cmd(self.MY_APP_PY, a_cmd, self.MY_UI_DIR_FULL)
-        #.assertTrue(s == 0)
+            u = User(username='guest')#, email='john@example.com')
+            u.set_password('guest')
+            db.session.add(u)
+            db.session.commit()
 
-    @pytest.mark.order(106)
-    def test_flask_migration_m106_admin_user(self):
+            u1 = User.query.get(1)
+            p1 = Post(body='u1 > post1 ', author=u1)
+            db.session.add(p1)
+            db.session.commit()
+
+            u1 = User.query.get(2)
+            p1 = Post(body='u2 > post2 ', author=u1)
+            db.session.add(p1)
+            db.session.commit()
+
+            u1 = User.query.get(2)
+            p1 = Post(body='u2 > post3 ', author=u1)
+            db.session.add(p1)
+            db.session.commit()
+
+            u1_posts_all = u1.posts.all()
+            for p in u1_posts_all:
+                LOG.info(" {} {} {} ".format(p.id, p.author.username, p.body))
+                LOG.info(" {} {} ".format(u.id, u.username))
+
+
+
+
+    @pytest.mark.skip()
+    @pytest.mark.order(105)
+    def test_flask_migration_m105_create_user(self):
         from app import create_app
         app = create_app()
 
         from app.extensions import db
-        from app.models import User
+        from app.models import User, Post
         app.app_context().push()
 
-        u = User(username='abc')#, email='john@example.com')
-        u.set_password('def')
+        u = User(username='guest')#, email='john@example.com')
+        u.set_password('guest')
         db.session.add(u)
         db.session.commit()
-        
 
+        u1 = User.query.get(1)
+        p1 = Post(body='my first post!', author=u1)
+        db.session.add(p1)
+        db.session.commit()
 
-    @pytest.mark.skip()
-    @pytest.mark.order(103)
-    def test_flask_migration_m103_preparation(self, my_config, act_config):     
+        u1_posts_all = u1.posts.all()
+        for p in u1_posts_all:
+            LOG.info(" {} {} {} ".format(p.id, p.author.username, p.body))
+            LOG.info(" {} {} ".format(u.id, u.username))
 
-        #def test_migrate_upgrade(self):
-        (o, e, s) = self.run_cmd('my_app.py', 'flask db init')
-        self.assertTrue(s == 0)
-        (o, e, s) = self.run_cmd('app.py', 'flask db check')
-        self.assertTrue(s != 0)
-        (o, e, s) = self.run_cmd('app.py', 'flask db migrate')
-        self.assertTrue(s == 0)
-        (o, e, s) = self.run_cmd('app.py', 'flask db check')
-        self.assertTrue(s != 0)
-        (o, e, s) = self.run_cmd('app.py', 'flask db upgrade')
-        self.assertTrue(s == 0)
-        (o, e, s) = self.run_cmd('app.py', 'flask db check')
-        self.assertTrue(s == 0)
-
-        from .app import app, db, User
-        with app.app_context():
-            db.engine.dispose()
-            db.session.add(User(name='test'))
-            db.session.commit()
-
-
-    @pytest.mark.skip
+    #@pytest.mark.skip()
     @pytest.mark.order(109)
-    def test_flask_migration_m109_preparation(self, my_config, act_config):
-        LOG.info(" my_config ")
-        LOG.info(pp.pformat(my_config))
+    def test_flask_migration_m109_query_user_and_post(self):
 
-        os.chdir(self.MY_WORK_DIR)
-        tmp_db_sqlite=os.path.join(self.MY_WORK_DIR,self.MY_DB_SQLITE)
-        tmp_db_dir=os.path.join(self.MY_WORK_DIR,self.MY_DB_DIR)
+        from app import create_app
+        app = create_app()
 
-        try:
-            os.remove(tmp_db_sqlite)
-        except OSError:
-            pass
-        try:
-            shutil.rmtree(tmp_db_dir)
-        except OSError:
-            pass
+        from app.extensions import db
+        from app.models import User, Post
+        app.app_context().push()
 
+        all_users = User.query.all()
+        for u in all_users:
+            LOG.info(" {} {} ".format(u.id, u.username))
+
+        all_posts = Post.query.all()
+        for p in all_posts:
+            LOG.info(" {} {} {} ".format(p.id, p.author.username, p.body))
