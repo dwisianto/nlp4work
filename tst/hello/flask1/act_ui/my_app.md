@@ -1,4 +1,45 @@
 
+# 20230-07-28
+
+- https://blog.miguelgrinberg.com/post/beautiful-interactive-tables-for-your-flask-templates
+
+# 2023-07-27 Flask & Dash Front-End
+
+- https://github.com/bw984/Flask-Dash-App-Factory-Template 
+
+## Etc
+
+- https://bootstrap-flask.readthedocs.io/en/stable/
+- https://dash-bootstrap-components.opensource.faculty.ai/
+- https://github.com/tzelleke/flask-dash-app/blob/master/app/templates/index.html
+- https://github.com/naderelshehabi/dash-flask-login/tree/main
+- https://stackoverflow.com/questions/59627976/integrating-dash-apps-into-flask-minimal-example
+
+## Backup
+
+
+```
+def register_board0(app):
+    from app.board.b0.layout import layout
+    from app.board.b0.callbacks import register_callbacks
+
+    board0_name='board0'
+    board0 = dash.Dash(__name__,
+                        server=app,
+                        url_base_pathname='/'+board0_name+'/',
+                        assets_folder=get_root_path(__name__) + '/'+board0_name+'/assets/',
+                        meta_tags=[_meta_viewport],
+                        external_stylesheets=[dbc.themes.BOOTSTRAP],
+    )
+
+    with app.app_context():
+        board0.title = board0_name
+        board0.layout = layout
+        register_callbacks(board0)
+```
+
+
+
 # 2023-07-26 flask login with a timeout feature
 
 - https://stackoverflow.com/questions/11783025/is-there-an-easy-way-to-make-sessions-timeout-in-flask

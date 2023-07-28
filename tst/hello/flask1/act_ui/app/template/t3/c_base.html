@@ -1,0 +1,18 @@
+<html>
+    <head>
+      <title>MyApp</title>
+    </head>
+    <body>
+        <header>
+            <a href="/" class='nav-bar-text-link'>Home</a>
+            <a href="/board0" class='nav-bar-text-link'>board0</a>
+            <a href="/board1" class='nav-bar-text-link'>board1</a>
+            <a href="/board2" class='nav-bar-text-link'>board2</a>
+            <a href="/board3" class='nav-bar-text-link'>board3</a>
+            <a href="/feedback4" class='nav-bar-text-link'>feedback</a>
+            <a href="/logout" class='nav-bar-text-link'>Logout</a>
+        </header>
+        {% block content %}{% endblock %}
+    </body>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='app_style.css')}}">
+</html>

@@ -3,6 +3,7 @@
 #
 #
 #
+import os
 from flask import Flask
 from flask.helpers import get_root_path
 from flask_login import login_required
@@ -14,25 +15,63 @@ from my_cfg import MyConfigObject, my_log
 
 
 def create_app():
-    server = Flask(__name__, template_folder="template/t2")
-    server.config.from_object(MyConfigObject)
-    server.testing = True #return a test_client inside a pytest case
 
-    # [] logging
+    server = Flask(__name__, template_folder="template/t3", static_folder='static/s2')
+    server.config.from_object(MyConfigObject)
     server.logger.addHandler(my_log)
-    server.logger.info("create_app")
-   
+    server.testing = True  # return a test_client inside a pytest case
+
     # [] extension
     register_extensions(server)
+
+    # [] register dash app
+    b0_title = 'Board0'
+    from app.board.b0.layout import layout as b0_layout
+    from app.board.b0.callbacks import register_callbacks as b0_callbacks
+    register_dash_view(flask_server=server,
+                       title=b0_title,
+                       base_pathname=b0_title.lower()+'0',
+                       layout=b0_layout,
+                       callback_func_list=[b0_callbacks])
+
+    b1_title = 'Board1'
+    from app.board.b1.layout import layout as b1_layout
+    from app.board.b1.callbacks import register_callbacks as b1_callbacks
+    register_dash_view(flask_server=server,
+                       title=b1_title,
+                       base_pathname=b1_title.lower()+'0',
+                       layout=b1_layout,
+                       callback_func_list=[b1_callbacks])
+
+    b2_title = 'Board2'
+    from app.board.b2.layout import layout as b2_layout
+    from app.board.b2.callbacks import register_callbacks as b2_callbacks
+    register_dash_view(flask_server=server,
+                       title=b2_title,
+                       base_pathname=b2_title.lower()+'0',
+                       layout=b2_layout,
+                       callback_func_list=[b2_callbacks])
+
+    b3_title = 'Board3'
+    from app.board.b3.layout import layout as b3_layout
+    from app.board.b3.callbacks import register_callbacks as b3_callbacks
+    register_dash_view(flask_server=server,
+                       title=b3_title,
+                       base_pathname=b3_title.lower()+'0',
+                       layout=b3_layout,
+                       callback_func_list=[b3_callbacks])
+
+    #register_board0(server)
+    #register_board1(server)
+    #register_board2(server)
+    #register_board3(server)
+
+    # [] blueprint
     register_blueprints(server)
-    register_board0(server)
-    register_board1(server)
-    register_board2(server)
-    register_board3(server)
 
+    # []
+    server.logger.info(f'Flask Server PID {str(os.getpid())}.')
     return server
-
-
 
 
 def register_extensions(server):
@@ -41,15 +80,19 @@ def register_extensions(server):
     from app.extensions import migrate
     from app.extensions import bootstrap
 
-    server.logger.info("registering_extension")
+    server.logger.info("create_app > register_extensions")
+
     db.init_app(server)
     login.init_app(server)
     login.login_view = 'main.login'
     migrate.init_app(server, db)
     bootstrap.init_app(server)
 
+
 def register_blueprints(server):
     from app.routes import server_bp
+
+    server.logger.info("create_app > register_blueprints ")
 
     server.register_blueprint(server_bp)
 
@@ -57,101 +100,45 @@ def register_blueprints(server):
 #
 # Protect any dashboard with a login requirement
 #
-def _protect_dashviews(dashapp):
-    for view_func in dashapp.server.view_functions:
-        if view_func.startswith(dashapp.config.url_base_pathname):
-            dashapp.server.view_functions[view_func] = login_required(
-                dashapp.server.view_functions[view_func])
+def register_dash_view_and_protect_dash_view(a_dash_view):
+    for view_func in a_dash_view.server.view_functions:
+        if view_func.startswith(a_dash_view.config.url_base_pathname):
+            a_dash_view.server.view_functions[view_func] = login_required(
+                a_dash_view.server.view_functions[view_func])
+
 
 # Meta tags for viewport responsiveness
-_meta_viewport = {
+register_dash_view_with_meta_viewport={
         "name": "viewport",
-        "content": "width=device-width, initial-scale=1, shrink-to-fit=no"}
+        "content": "width=device-width, initial-scale=1, shrink-to-fit=no"
+}
 
 
-def register_board0(app):
-    from app.board.b0.layout import layout
-    from app.board.b0.callbacks import register_callbacks
+def register_dash_view(
+        flask_server,
+        title,
+        base_pathname,
+        layout,
+        callback_func_list):
 
-    board0_name='board0'
-    board0 = dash.Dash(__name__,
-                        server=app,
-                        url_base_pathname='/'+board0_name+'/',
-                        assets_folder=get_root_path(__name__) + '/'+board0_name+'/assets/',
-                        meta_tags=[_meta_viewport],
-                        external_stylesheets=[dbc.themes.BOOTSTRAP],
+    from my_cfg import my_debug
+
+    a_dash_view = dash.Dash(
+        __name__,
+        server=flask_server,
+        url_base_pathname=f'/{base_pathname}/',
+        assets_folder=get_root_path(__name__) + '/static/',
+        meta_tags=[ register_dash_view_with_meta_viewport],
+        external_stylesheets=[dbc.themes.BOOTSTRAP],
+        # external_scripts=[],
     )
 
-    with app.app_context():
-        board0.title = board0_name
-        board0.layout = layout
-        register_callbacks(board0)
+    with flask_server.app_context():
+        a_dash_view.title = title
+        a_dash_view.layout = layout
+        a_dash_view.css.config.serve_locally = True
+        a_dash_view.enable_dev_tools(debug=my_debug.dash_debug, dev_tools_hot_reload=my_debug.dash_auto_reload)
+        for a_call_back_func in callback_func_list:
+            a_call_back_func(a_dash_view)
 
-    _protect_dashviews(board0)
-
-
-def register_board1(app):
-    from app.board.b1.layout import layout
-    from app.board.b1.callbacks import register_callbacks
-
-    board1_name='board1'
-    board1 = dash.Dash(__name__,
-                        server=app,
-                        url_base_pathname='/'+board1_name+'/',
-                        assets_folder=get_root_path(__name__) + '/'+board1_name+'/assets/',
-                        meta_tags=[_meta_viewport],
-                        external_stylesheets=[dbc.themes.BOOTSTRAP],
-    )
-
-    with app.app_context():
-        board1.title = board1_name
-        board1.layout = layout
-        register_callbacks(board1)
-
-    _protect_dashviews(board1)
-
-
-
-
-def register_board2(app):
-
-    from app.board.b2.layout import layout
-    from app.board.b2.callbacks import register_callbacks
-
-    board2_name='board2'
-    board2 = dash.Dash(__name__,
-                         server=app,
-                         url_base_pathname='/'+board2_name+'/',
-                         assets_folder=get_root_path(__name__) + '/'+board2_name+'/assets/',
-                         meta_tags=[_meta_viewport],
-                         external_stylesheets=[dbc.themes.BOOTSTRAP],
-    )
-
-    with app.app_context():
-        board2.title = board2_name
-        board2.layout = layout
-        register_callbacks(board2)
-
-    _protect_dashviews(board2)
-
-
-def register_board3(app):
-
-    from app.board.b3.layout import layout
-    from app.board.b3.callbacks import register_callbacks
-
-    board_name='board3'
-    board = dash.Dash(__name__,
-                         server=app,
-                         url_base_pathname='/'+board_name+'/',
-                         assets_folder=get_root_path(__name__) + '/'+board_name+'/assets/',
-                         meta_tags=[_meta_viewport],
-                         external_stylesheets=[dbc.themes.BOOTSTRAP],
-    )
-
-    with app.app_context():
-        board.title = board_name
-        board.layout = layout
-        register_callbacks(board)
-
-    _protect_dashviews(board)
+        register_dash_view_and_protect_dash_view(a_dash_view)

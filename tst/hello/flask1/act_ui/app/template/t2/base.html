@@ -1,5 +1,6 @@
 {% from 'bootstrap4/nav.html' import render_nav_item %}
 {% from 'bootstrap4/utils.html' import render_messages %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,12 +58,14 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!--
     <footer class="text-right">
         {% block footer %}
             <small> &copy; <script>document.write(new Date().getFullYear())</script> <a href="https://github.com/">GitHub</a>
             </small>
         {% endblock %}
     </footer>
+    -->
 
     {{ bootstrap.load_js() }}
 </body>

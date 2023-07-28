@@ -3,12 +3,11 @@ from dash import dcc
 from dash import html
 import dash_bootstrap_components as dbc
 
-from app.board.navigator import nav_menu
+#from app.board.navigator import nav_menu
 
-
+#    nav_menu,
 # html.A("Home", href='http://localhost:5000'),
 layout = html.Div(id='board1', children=[
-    nav_menu,    
     html.H1(children='Hello Dash Button'),    
     html.H1(id='username'),
     html.Div(dcc.Input(id='input-on-submit', type='text')),

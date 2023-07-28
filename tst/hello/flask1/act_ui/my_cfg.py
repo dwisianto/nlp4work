@@ -1,3 +1,9 @@
+#
+# Keep this file and other files used by the create_app function free of inner-project import statements
+# to help prevent circular imports.
+# Setting up cache in a separate cache.py file similar to this config.py file is very helpful.
+#
+
 import os
 import datetime # flask-login timeout
 
@@ -56,4 +62,16 @@ class MyLog:
         })
         return logging.getLogger(name)
 
-my_log = MyLog.get_handler(log_path=os.path.join(ACT_CONFIG['log_dir'],'my_log.log'))
+
+from datetime import date
+
+my_log_file_name = 'my_log_'+date.today().strftime('%Y_%m_%d_%H_%M_%S')+'.log'
+my_log = MyLog.get_handler(log_path=os.path.join(ACT_CONFIG['log_dir'], my_log_file_name))
+
+
+class MyDebug:
+    dash_debug=False
+    dash_auto_reload=False
+
+
+my_debug = MyDebug()

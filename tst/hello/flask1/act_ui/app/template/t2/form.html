@@ -5,6 +5,12 @@
 
     <h2>Render a form with render_form</h2>
     <!-- <pre>{% raw %}{{ render_form(form) }}{% endraw %}</pre> -->
-    {{ render_form(form) }}
+    <!-- {{ render_form(form) }} -->
+
+    <h2>Custom buttons with button_map</h2>
+    <pre>{% raw %}{{ render_form(button_form, button_map={'submit': 'primary', 'cancel': 'secondary', 'delete': 'danger'}) }}{% endraw %}</pre>
+    {{ render_form(button_form, button_map={'submit': 'primary', 'cancel': 'secondary', 'delete': 'danger'}) }}
+
+
 
 {% endblock %}

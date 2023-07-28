@@ -179,8 +179,8 @@ class TestFlaskMigration:
         from app.models import User, Post
         app.app_context().push()
 
-        u = User(username='guest')#, email='john@example.com')
-        u.set_password('guest')
+        u = User(username='friend')#, email='john@example.com')
+        u.set_password('friend')
         db.session.add(u)
         db.session.commit()
 

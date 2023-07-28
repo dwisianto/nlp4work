@@ -8,6 +8,11 @@ from flask_login import current_user
 import pandas as pd
 from datetime import datetime as dt
 
+
+from app.extensions import db
+from app.models import User, Post
+
+
 def register_callbacks(current_app):
 
     @current_app.callback(
@@ -65,3 +70,24 @@ def register_callbacks(current_app):
     def update_output(n_clicks, value):
         if n_clicks > 0:
             return 'You have entered: \n{}'.format(value)
+
+            from app.extensions import db
+            from app.models import User, Post
+            #app.app_context().push()
+
+            #u1 = User.query.get(2)
+            #p1 = Post(body=value, author=u1)
+            #db.session.add(p1)
+            #db.session.commit()
+
+            for u in User.query.all():
+                if current_user.username == u.username:
+                    u0 = u
+            my_log.info(" feedback {} {} ".format(u0.id, u0.username))
+            
+            p0 = Post(body=form.feedback.data, author=u0)
+            db.session.add(p0)
+            db.session.commit()
+
+
+        

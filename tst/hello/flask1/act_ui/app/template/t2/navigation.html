@@ -3,8 +3,10 @@
   {% if current_user.is_anonymous %}
   <a href="{{ url_for('main.login') }}">Login</a>
   {% else %}
-  - <a href="{{ url_for('/board1/') }}">DashBoard1</a>
-  - <a href="{{ url_for('/board2/') }}">DashBoard2</a>
+  - <a href="{{ url_for('/board1/') }}">Board1</a>
+  - <a href="{{ url_for('/board2/') }}">Board2</a>
+  - <a href="{{ url_for('/board3/') }}">Board3</a>
+  - <a href="{{ url_for('main.feedback') }}">Feedback</a>
   - <a href="{{ url_for('main.logout') }}">Logout</a>
   {% endif %}
 

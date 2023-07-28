@@ -7,9 +7,9 @@ from flask_login import current_user
 import pandas as pd
 from datetime import datetime as dt
 
-import logging
-LOG = logging.getLogger(__name__)
-
+#import logging
+#LOG = logging.getLogger(__name__)
+from my_cfg import my_log
 
 
 #
@@ -49,11 +49,11 @@ def register_callbacks(current_app):
 
         all_users = User.query.all()
         for u in all_users:
-            LOG.info(" {} {} ".format(u.id, u.username))
+            my_log.info(" {} {} ".format(u.id, u.username))
 
         post_list = []
         for p in Post.query.all():
-            LOG.info(" {} {} {} ".format(p.id, p.author.username, p.body))
+            my_log.info(" {} {} {} ".format(p.id, p.author.username, p.body))
             if current_user.username == p.author.username:
                 post_list.append({'id':p.id,
                                     'username':p.author.username,
