@@ -1,1 +1,1 @@
-app___/my_env.sh
+app___/dot_env.sh

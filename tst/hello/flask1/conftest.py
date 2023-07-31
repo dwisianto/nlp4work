@@ -10,12 +10,14 @@ import datetime
 import pprint as pp
 
 
+import dotenv
+dotenv.load_dotenv()
+
+
 #
 # Customization
 #
 from act.actions import ACT_CONFIG, act_conf
-
-
 sys.path.insert(0, os.path.join(ACT_CONFIG['top_work'], 'act_ui'))
 pp.pprint(sys.path)
 
@@ -76,10 +78,6 @@ def my_config(request):
     #
     os.environ['DAT_LOC'] = os.getenv("HOME") + '/db'
     os.environ['JAVA_HOME'] = '/dsw/software/java/jdk/j1102'
-    os.environ['DATABASE_URL'] = 'sqlite:///${PWD}/migrations_db.sqlite'
-    os.environ['FLASK_ENV']='development'
-    os.environ['FLASK_APP']='my_app'
-    os.environ['SECRET_KEY']='my_secret'
     return my_dict
 
 

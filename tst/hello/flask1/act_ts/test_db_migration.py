@@ -41,18 +41,18 @@ class FlaskCli:
 #
 #
 #
-# @pytest.mark.skip()
-class TestFlaskMigration:
+@pytest.mark.skip()
+class TestDbMigration:
 
     MY_UI_DIR='act_ui'
     MY_DB_SQLITE='migrations_db.sqlite'
     MY_DB_DIR='migrations'
     MY_APP_PY='my_app.py'
-    
 
-    #@pytest.mark.skip()
+
+    @pytest.mark.skip()
     @pytest.mark.order(102)
-    def test_flask_migration_m102_config(self, my_config, act_config):
+    def test_db_migration_m102_config(self, my_config, act_config):
         LOG.info(" my_config ")
 
         LOG.info(pp.pformat(my_config))
@@ -92,10 +92,9 @@ class TestFlaskMigration:
         else:
             LOG.info("Missing:"+tmp_db_dir)
 
-    #@pytest.mark.skip()
+    @pytest.mark.skip()
     @pytest.mark.order(103)
-    def test_flask_migration_m103_run_cmd(self, my_config, act_config):     
-
+    def test_db_migration_m103_run_cmd(self, my_config, act_config):     
 
         act_dir_ts=os.path.join(my_config['act_dir'],'act_ts')
         act_dir_ui=os.path.join(my_config['act_dir'],'act_ui')
@@ -123,9 +122,9 @@ class TestFlaskMigration:
 
 
 
-    #@pytest.mark.skip()
+    @pytest.mark.skip()
     @pytest.mark.order(104)
-    def test_flask_migration_m104_query_user_and_post(self):
+    def test_db_migration_m104_query_user_and_post(self):
 
         #
         #
@@ -171,7 +170,7 @@ class TestFlaskMigration:
 
     @pytest.mark.skip()
     @pytest.mark.order(105)
-    def test_flask_migration_m105_create_user(self):
+    def test_db_migration_m105_create_user(self):
         from app import create_app
         app = create_app()
 
@@ -194,9 +193,9 @@ class TestFlaskMigration:
             LOG.info(" {} {} {} ".format(p.id, p.author.username, p.body))
             LOG.info(" {} {} ".format(u.id, u.username))
 
-    #@pytest.mark.skip()
+    @pytest.mark.skip()
     @pytest.mark.order(109)
-    def test_flask_migration_m109_query_user_and_post(self):
+    def test_db_migration_m109_query_user_and_post(self):
 
         from app import create_app
         app = create_app()

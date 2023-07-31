@@ -7,7 +7,8 @@ echo "ENV VARS:"
 #
 #
 #
-export MY_BASH="/opt/homebrew/Cellar/bash/5.2.9/bin/bash"
+#export MY_BASH="/opt/homebrew/Cellar/bash/5.2.9/bin/bash"
+export MY_BASH=""
 export MY_CONDA=$(which conda)
 export MY_CONDA_ENV='web904a'
 export MY_ENV=${MY_CONDA_ENV}

@@ -1,9 +1,22 @@
 
-# 20230-07-28
+# 2023
+
+## 07
+
+### 30 dot-env
+
+- https://stackoverflow.com/questions/64734118/environment-variable-not-loading-with-load-dotenv-in-linux
+
+### 29 Dict2Class
+
+- https://www.geeksforgeeks.org/how-to-change-a-dictionary-into-a-class/
+
+### 28 flask table and editable table
 
 - https://blog.miguelgrinberg.com/post/beautiful-interactive-tables-for-your-flask-templates
+- https://github.com/miguelgrinberg/flask-tables
 
-# 2023-07-27 Flask & Dash Front-End
+### 27 Flask & Dash Front-End
 
 - https://github.com/bw984/Flask-Dash-App-Factory-Template 
 
@@ -65,10 +78,10 @@ def register_board0(app):
 
 
 
-# 2023-07-21
+# 2023-07-21 flask.shell
 
 - https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database
-- flask.shell
+
 
 ```
 from app import app, db
@@ -79,18 +92,32 @@ def make_shell_context():
     return {'db': db, 'User': User, 'Post': Post}
 ```
 
-## 2023-07-18
-- Reading sqlite with sqlalchemy
+# 2023-07-18 Reading sqlite with sqlalchemy
 - https://realpython.com/python-sqlite-sqlalchemy/
 - https://stackoverflow.com/questions/58896928/how-to-connect-to-sqlite-from-sqlalchemy
 
-## 2023-07-14
-- sqlalchemy and oracle
+# 2023-07-14 sqlalchemy and oracle
+
 - https://stackoverflow.com/questions/28453545/connecting-to-an-oracle-database-using-sqlalchemy
 
-## 2023-07-13
-- flask https://bootstrap-flask.readthedocs.io/en/stable/
+# 2023-07-13 flask
+
+-  https://bootstrap-flask.readthedocs.io/en/stable/
 - https://stackoverflow.com/questions/53945371/python-flask-before-first-request-funcs
  
-## 2023-07-10
+# 2023-07-10 python-dotenv
+
 - ln -s app___/my_env.sh ./.flaskenv
+- https://github.com/theskumar/python-dotenv
+
+# 2023-07-04
+
+| | | |
+|-|-|-|
+| dash_on_flask | https://github.com/okomarov/dash_on_flask | | 
+| flask-dash-app |  https://github.com/tzelleke/flask-dash-app | | 
+| Flask-AppBuilder |   https://github.com/dpgaspar/Flask-AppBuilder | | 
+| Flask-User |   https://github.com/lingthio/Flask-User | | 
+| dash-flask-login |   https://github.com/RafaelMiquelino/dash-flask-login | | 
+| flask-restful-login |   https://github.com/melihcolpan/flask-restful-login | | 
+| flask_for_startups |   https://github.com/nuvic/flask_for_startups | | 

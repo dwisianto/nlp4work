@@ -65,7 +65,7 @@ class MyLog:
 
 from datetime import date
 
-my_log_file_name = 'my_log_'+date.today().strftime('%Y_%m_%d_%H_%M_%S')+'.log'
+my_log_file_name = 'my_app_'+date.today().strftime('%Y_%m_%d_%H_%M_%S')+'.log'
 my_log = MyLog.get_handler(log_path=os.path.join(ACT_CONFIG['log_dir'], my_log_file_name))
 
 

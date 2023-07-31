@@ -16,10 +16,10 @@ import sqlite3
 #
 #
 @pytest.mark.skip()
-class TestSqlite:
+class TestDbSqlite:
 
     @pytest.fixture
-    def session(): 
+    def session(self):
         db_url = os.environ['DATABASE_URL'].replace("sqlite:///","")
         LOG.info( os.environ['DATABASE_URL'] )
         LOG.info(f'db_url {db_url}')
@@ -30,18 +30,9 @@ class TestSqlite:
         connection.close()
 
 
-
-    #@pytest.mark.skip()
-    #@pytest.mark.order(102)
-    #@pytest.mark.db_list
-    #def test_sqlite_step2_info(self):
-
-
-
     @pytest.mark.skip()
     @pytest.mark.order(102)
-    #@pytest.mark.db_list
-    def test_sqlite_step2_info(self):
+    def test_db_sqlite_step2_info(self):
         db_url = os.environ['DATABASE_URL'].replace("sqlite:///","")
         LOG.info( os.environ['DATABASE_URL'] )
         LOG.info(f'db_url {db_url}')
@@ -56,8 +47,7 @@ class TestSqlite:
     
     @pytest.mark.skip()
     @pytest.mark.order(109)
-    #@pytest.mark.db_list
-    def test_sqlite_step9_template(self):
+    def test_db_sqlite_step9_template(self):
         db_url = os.environ['DATABASE_URL'].replace("sqlite:///","")
         LOG.info( os.environ['DATABASE_URL'] )
         LOG.info(f'db_url {db_url}')

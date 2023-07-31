@@ -1,0 +1,15 @@
+
+#
+#
+#
+MY_DATA=${HOME}/d/db
+MY_DAT=${MY_DATA}
+PYTHONPATH=${PWD}:${PYTHONPATH}
+
+#
+#
+#
+FLASK_APP=my_app
+FLASK_ENV=development
+SECRET_KEY=my_secret
+DATABASE_URL=sqlite:///${PWD}/act_ui/my_app.sqlite

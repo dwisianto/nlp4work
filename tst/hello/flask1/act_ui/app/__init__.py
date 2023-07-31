@@ -16,7 +16,7 @@ from my_cfg import MyConfigObject, my_log
 
 def create_app():
 
-    server = Flask(__name__, template_folder="template/t3", static_folder='static/s2')
+    server = Flask(__name__, template_folder="template/t3", static_folder='static/s3')
     server.config.from_object(MyConfigObject)
     server.logger.addHandler(my_log)
     server.testing = True  # return a test_client inside a pytest case

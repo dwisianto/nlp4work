@@ -1,0 +1,5 @@
+FLASK_APP=my_app
+FLASK_ENV=development
+FLASK_DEBUG=1
+DATABASE_URL=sqlite:///${PWD}/my_app.sqlite
+SECRET_KEY=my_secret
