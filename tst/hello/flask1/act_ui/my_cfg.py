@@ -9,6 +9,7 @@ import datetime # flask-login timeout
 
 from act.actions import ACT_CONFIG
 
+
 def get_sqlite_uri():
     basedir = os.path.abspath(os.path.dirname(__file__))
     db_name = os.environ['DATABASE_URL'].split('/')[-1]
@@ -19,18 +20,32 @@ class MyConfigObject:
     SQLALCHEMY_DATABASE_URI = get_sqlite_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.environ['SECRET_KEY']
-    PERMANENT_SESSION_LIFETIME = datetime.timedelta(seconds=60) #flask-login with timeout
+    PERMANENT_SESSION_LIFETIME = datetime.timedelta(seconds=60)  # flask-login with timeout
+
+
+class MyDebug:
+    dash_debug = False
+    dash_auto_reload = False
+
+
+my_debug = MyDebug()
+
 
 #
 #
 #
+import datetime
 import logging
 import logging.config
+
 
 class MyLog:
 
     @staticmethod
     def get_handler(log_path, name='default'):
+
+        MyLog.create_dir_when_missing(log_path)
+
         logging.config.dictConfig({
             'version': 1,
             'formatters': {
@@ -62,16 +77,13 @@ class MyLog:
         })
         return logging.getLogger(name)
 
-
-from datetime import date
-
-my_log_file_name = 'my_app_'+date.today().strftime('%Y_%m_%d_%H_%M_%S')+'.log'
-my_log = MyLog.get_handler(log_path=os.path.join(ACT_CONFIG['log_dir'], my_log_file_name))
-
-
-class MyDebug:
-    dash_debug=False
-    dash_auto_reload=False
+    @staticmethod
+    def create_dir_when_missing(log_dir_path):
+        log_dir_path_basedir = os.path.dirname(log_dir_path)
+        if not os.path.exists(log_dir_path_basedir):
+            os.mkdir(log_dir_path_basedir)
 
 
-my_debug = MyDebug()
+my_log_file_name = 'my_app_'+datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')+'.log'
+my_log = MyLog.get_handler(log_path=os.path.join(ACT_CONFIG['log_ui'], my_log_file_name))
+

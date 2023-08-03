@@ -26,6 +26,7 @@ ACT = {
     'act': 'act',
     'act_ts': 'act_ts',
     'act_ui': 'act_ui',
+    'act_etc': 'act___',
     'ui_app': 'my_app.py',
     'ui_cfg': 'my_cfg.py',
     'ui_db_dir': 'migrations',
@@ -41,25 +42,25 @@ ACT_CONFIG = {
     'log_dir': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['log'], ACT['lot'], ACT['exp'])),
     'out_dir': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['out'], ACT['lot'], ACT['exp'])),
     'act_path': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['tst'], ACT['lot'], ACT['exp'])),
-    'act_dir': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['tst'], ACT['lot'], ACT['exp'],ACT['act'])),
-    'act_etc': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['tst'], ACT['lot'], ACT['exp'],'act___')),
-    'act_ui': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['tst'], ACT['lot'], ACT['exp'],'act_ui')),
-    'act_ts': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['tst'], ACT['lot'], ACT['exp'],'act_ts')),
+    'act_dir': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['tst'], ACT['lot'], ACT['exp'], ACT['act'])),
+    'act_etc': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['tst'], ACT['lot'], ACT['exp'], ACT['act_etc'])),
+    'act_ui': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['tst'], ACT['lot'], ACT['exp'], ACT['act_ui'])),
+    'act_ts': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['tst'], ACT['lot'], ACT['exp'], ACT['act_ts'])),
+    'log_ui': os.path.abspath(os.path.join(ACT['space'], ACT['project'], ACT['log'], ACT['lot'], ACT['exp'], ACT['act_ui'])),
     'JAVA_HOME': os.getenv('JAVA_HOME')
 }
 
 
-
 class ActConfig:
-    #SQLITE_FILE_DIR = os.path.join(os.environ['MY_DAT'], 'xcl', 'c1a')
-    #SQLITE_FILE_NAME = 'cost_passages_2023_05_07.sqlite'
-    #act_cfg='act___'
-    #act_ts='act_ts'
-    #act_ui='act_ui'
-    #MY_UI_DIR = 'act_ui'
-    #MY_DB_SQLITE = 'migrations_db.sqlite'
-    #MY_DB_DIR = 'migrations'
-    #MY_APP_PY = 'my_app.py'
+    # SQLITE_FILE_DIR = os.path.join(os.environ['MY_DAT'], 'xcl', 'c1a')
+    # SQLITE_FILE_NAME = 'cost_passages_2023_05_07.sqlite'
+    # act_cfg='act___'
+    # act_ts='act_ts'
+    # act_ui='act_ui'
+    # MY_UI_DIR = 'act_ui'
+    # MY_DB_SQLITE = 'migrations_db.sqlite'
+    # MY_DB_DIR = 'migrations'
+    # MY_APP_PY = 'my_app.py'
 
     def __init__(self, seed_dict):
         self.seed_dict=seed_dict
@@ -69,9 +70,9 @@ class ActConfig:
         self.act_ui_db_file=os.path.join(self.act_ui, ACT['ui_db_file'])
         self.act_ui_db_dir=os.path.join(self.act_ui, ACT['ui_db_dir'])
 
-
     def __str__(self):
         return str(self.seed_dict)
+
 
 act_conf = ActConfig(ACT_CONFIG)
 

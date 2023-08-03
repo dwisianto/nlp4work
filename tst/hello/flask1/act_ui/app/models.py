@@ -18,6 +18,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    tales = db.relationship('Tale', backref='author', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -27,6 +28,12 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+        }
 
 
 #
@@ -40,3 +47,32 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
+
+    def to_dict(self):
+        return {
+            'post_id': self.id,
+            'user_id': self.user_id,
+            'body': self.body,
+            'post_timestamp': self.timestamp,
+        }
+
+
+#
+# Tale, Narration, Narrative
+class Tale(db.Model):
+    tale_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    tale_timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    tale_narrative = db.Column(db.String(260))
+    tale_narrative_id = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '<Tale id:{}>'.format(self.tale_id)
+
+    def to_dict(self):
+        return {
+            'tale_id': self.tale_id,
+            'user_id': self.user_id,
+            'tale_timestamp': self.tale_timestamp,
+            'tale_narrative': self.tale_narrative,
+        }

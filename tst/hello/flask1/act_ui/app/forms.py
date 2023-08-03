@@ -4,7 +4,7 @@ from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms.validators import DataRequired
-
+from wtforms.widgets import TextArea
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -22,4 +22,10 @@ class RegistrationForm(FlaskForm):
 class FeedbackForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     feedback = StringField('Feedback', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+
+class TaleForm(FlaskForm):
+    narrative_id = StringField('Narrative Id', validators=[DataRequired()])
+    narrative = StringField('Narrative', widget=TextArea())
     submit = SubmitField('Submit')

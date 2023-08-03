@@ -14,7 +14,7 @@
     {{ form.password.label }}
     {{ form.password(size=32) }}<br>
   </p>
-  <!--<p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>-->
+  <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
   <p>{{ form.submit() }}</p>
   {% if error %}
   <p class="error"><strong>Error:</strong> {{ error }}

@@ -1,6 +1,12 @@
 
 # 2023
 
+## 08
+
+### 01 TextArea
+
+https://stackoverflow.com/questions/7979548/how-to-render-my-textarea-with-wtforms
+
 ## 07
 
 ### 30 dot-env
