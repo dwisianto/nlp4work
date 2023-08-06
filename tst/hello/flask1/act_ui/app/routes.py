@@ -1,12 +1,16 @@
 
 
+import os
+
 from flask import Blueprint
 from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
-from flask import session # flask-login timeout
 from flask import abort
+from flask import flash
+from flask import session  # flask-login timeout
+from flask import send_from_directory  # static directory to favicon.ido
 
 from flask_login import current_user
 from flask_login import login_required
@@ -18,7 +22,7 @@ from werkzeug.urls import url_parse
 from app.forms import LoginForm, FeedbackForm, TaleForm
 from app.models import User, Post, Tale
 from app.extensions import db
-from my_cfg import my_log
+from my_cfg import my_log, MyConfigObject
 
 
 
@@ -31,15 +35,21 @@ server_bp = Blueprint(server_bp_id, __name__)
 
 @server_bp.route('/')
 def index():
-    session.permanent = True
-    my_log.info('server_bp_route_slash')
+    session.permanent = True # flask login timeout
+    my_log.info('server_bp_route_index_slash')
 
-    #return redirect(url_for('/board0a/'))
     out_url = redirect(url_for('main.login'))
     if current_user.is_authenticated:
         out_url = render_template("c_index.html", title='Home Page', user=current_user)
 
     return out_url
+
+
+@server_bp.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(server_bp.root_path, MyConfigObject.LOC_STATIC_FAVICON),
+                               MyConfigObject.LOC_STATIC_FAVICON_NAME,
+                               mimetype='image/vnd.microsoft.icon' )
 
 
 @server_bp.route('/login/', methods=['GET', 'POST'])
@@ -50,15 +60,22 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
+
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            error = 'Invalid username or password'
-            return render_template('c_login.html', form=form, error=error)
+            error_msg = 'Invalid username or password'
+            flash(error_msg)
+            return render_template('c_login.html', form=form, error=error_msg)
 
-        login_user(user, remember=form.remember_me.data)
+        if form.remember_me.data:
+            login_user(user, remember=True, duration=MyConfigObject.PERMANENT_SESSION_LIFETIME)
+        else:
+            login_user(user, remember=form.remember_me.data)
+
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('main.index')
+
         return redirect(next_page)
 
     return render_template('c_login.html', title='Sign In', form=form)
@@ -143,9 +160,8 @@ def feedback4a():
     form = FeedbackForm()
     if form.validate_on_submit():
 
-        for u in User.query.all():
-            if current_user.username == u.username:
-                u0 = u
+        # filter by current_user
+        u0 = User.query.filter_by(username=current_user.username).first_or_404()
         my_log.info(" feedback {} {} ".format(u0.id, u0.username))
 
         p0 = Post(body=form.feedback.data, author=u0)
@@ -168,22 +184,21 @@ def editable5():
     return render_template('c_editable.html', title='Feedback')
 
 
-@server_bp.route('/api/data')
+@server_bp.route('/editable5/info')
 @login_required
 def editable_info_posts():
-    post_query = Post.query
 
     # filter by current_user
     user_now = User.query.filter_by(username=current_user.username).first_or_404()
-    post_query = Post.query.filter_by(user_id=user_now.id)
+    tale_query = Tale.query.filter_by(user_id=user_now.id)
 
     # search filter
     search = request.args.get('search')
     if search:
-        post_query = post_query.filter(db.or_(
-            Post.body.like(f'%{search}%'),
+        tale_query = tale_query.filter(db.or_(
+            Tale.body.like(f'%{search}%'),
         ))
-    total = post_query.count()
+    total = tale_query.count()
 
     # sorting
     sort = request.args.get('sort')
@@ -194,22 +209,23 @@ def editable_info_posts():
             name = s[1:]
             if name not in ['body']:
                 name = 'body'
-            col = getattr(Post, name)
+            col = getattr(Tale, name)
             if direction == '-':
                 col = col.desc()
             order.append(col)
         if order:
-            post_query = post_query.order_by(*order)
+            tale_query = tale_query.order_by(*order)
 
     # pagination
+
     start = request.args.get('start', type=int, default=-1)
     length = request.args.get('length', type=int, default=-1)
     if start != -1 and length != -1:
-        query = post_query.offset(start).limit(length)
+        query = tale_query.offset(start).limit(length)
 
     # response
     return {
-        'data': [a_post.to_dict() for a_post in post_query],
+        'data': [a_tale.to_dict() for a_tale in tale_query],
         'total': total,
     }
 
@@ -235,10 +251,42 @@ def editable_info_posts_update():
     return '', 204
 
 
-@server_bp.route('/summary/', methods=['GET'])
+
+@server_bp.route('/datatable7/', methods=['GET'])
+@login_required
+def datatable7():
+    return render_template('c_datatable.html', title='Example Ajax Table')
+
+
+@server_bp.route('/datatable7/info')
+@login_required
+def datatable7_data():
+    #tale_query = Tale.query
+
+    # filter by current_user
+    user_now = User.query.filter_by(username=current_user.username).first_or_404()
+    tale_query = Tale.query.filter_by(user_id=user_now.id)
+
+    return {'data': [ a_tale.to_dict() for a_tale in tale_query]}
+
+
+
+
+@server_bp.route('/overview/', methods=['GET'])
 @login_required
 def overview():
     return render_template('c_overview.html', title='Overview')
+
+@server_bp.route('/overview/info')
+@login_required
+def overview_info():
+
+    # filter by current_user
+    user_now = User.query.filter_by(username=current_user.username).first_or_404()
+    tale_query = Tale.query.filter_by(user_id=user_now.id)
+
+    return {'data': [ a_tale.to_dict() for a_tale in tale_query]}
+
 
 
 @server_bp.route('/narration/', methods=['GET', 'POST'])
@@ -250,17 +298,44 @@ def narration():
 
         # get the current_user
         u0 = User.query.filter_by(username=current_user.username).first_or_404()
-        my_log.info(" narration {} {} ".format(u0.id, u0.username))
+        my_log.info(" narration user_id: {} and username: {} ".format(u0.id, u0.username))
 
-        p0 = Tale(body=form.narrative.data, author=u0)
-        db.session.add(p0)
+        # current form
+        my_log.info("narration form_narrative_id:" + str(form.narrative_id))
+        my_log.info("narration narrative_correctness:" + str(form.narrative_correctness))
+        my_log.info("narration form:" + str(form.narrative_id))
+
+        # check for existing tale
+        t0 = Tale.query.filter_by(tale_narrative_id=form.narrative_id.data).first()
+        my_log.info(" narration tale n0: {} ".format(t0))
+
+        now_tale_id=len(Tale.query.all())
+        if t0 is not None and t0.tale_id is not None: # existing tale
+            t0.tale_narrative_id = form.narrative_id.data
+            t0.tale_narrative = form.narrative.data
+            t0.tale_narrative_correctness = form.narrative_correctness.data
+
+        if t0 is None:
+            p0 = Tale(user_id=u0.id,
+                      tale_narrative=form.narrative.data,
+                      tale_narrative_id=form.narrative_id.data,
+                      tale_narrative_correctness=form.narrative_correctness.data,
+                      author=u0)
+
+            db.session.add(p0)
+
         db.session.commit()
 
-        return redirect(url_for('main.login'))
+        #return redirect(url_for('main.login'))
+        return render_template('c_narration.html',
+                               title='Narration',
+                               form=TaleForm())
 
-    return render_template('c_narration.html', title='Narration', form=form)
+    return render_template('c_narration.html',
+                           title='Narration',
+                           form=form)
 
-@server_bp.route('/narration/info')
+@server_bp.route('/narration/info', methods=['GET'])
 @login_required
 def narration_info():
     tale_query = Tale.query
@@ -269,35 +344,7 @@ def narration_info():
     user_now = User.query.filter_by(username=current_user.username).first_or_404()
     tale_query = Tale.query.filter_by(user_id=user_now.id)
 
-    # search filter
-    search = request.args.get('search')
-    if search:
-        tale_query = tale_query.filter(db.or_(
-            Tale.body.like(f'%{search}%'),
-        ))
     total = tale_query.count()
-
-    # sorting
-    sort = request.args.get('sort')
-    if sort:
-        order = []
-        for s in sort.split(','):
-            direction = s[0]
-            name = s[1:]
-            if name not in ['body']:
-                name = 'body'
-            col = getattr(Post, name)
-            if direction == '-':
-                col = col.desc()
-            order.append(col)
-        if order:
-            tale_query = tale_query.order_by(*order)
-
-    # pagination
-    start = request.args.get('start', type=int, default=-1)
-    length = request.args.get('length', type=int, default=-1)
-    if start != -1 and length != -1:
-        query = tale_query.offset(start).limit(length)
 
     # response
     return {
@@ -312,7 +359,7 @@ def narration_info_update():
     from datetime import datetime
 
     request_json = request.get_json()
-    my_log.info(' editable_info_posts_update ' + str(request_json))
+    my_log.info(' narration_info_update ' + str(request_json))
     if 'id' not in request_json:
         abort(400)
 
@@ -325,3 +372,7 @@ def narration_info_update():
             setattr(request_post, 'timestamp', datetime.utcnow())
     db.session.commit()
     return '', 204
+
+
+
+

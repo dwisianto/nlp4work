@@ -20,7 +20,13 @@ class MyConfigObject:
     SQLALCHEMY_DATABASE_URI = get_sqlite_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.environ['SECRET_KEY']
-    PERMANENT_SESSION_LIFETIME = datetime.timedelta(seconds=60)  # flask-login with timeout
+    PERMANENT_SESSION_LIFETIME = datetime.timedelta(minutes=3)  # flask-login with timeout
+
+    LOC_TEMPLATE = 'template/t3'
+    LOC_STATIC = 'static/s3'
+    LOC_STATIC_URL_PATH = '/static/'
+    LOC_STATIC_FAVICON='static/s3/favicon'
+    LOC_STATIC_FAVICON_NAME = 'favicon.ico'
 
 
 class MyDebug:

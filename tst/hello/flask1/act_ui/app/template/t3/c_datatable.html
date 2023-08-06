@@ -7,9 +7,10 @@
       <table id="data" class="table table-striped">
         <thead>
           <tr>
-            <th>Id</th>
-            <th>Correctness</th>
+            <th>Tale Id</th>
             <th>Narrative</th>
+            <th>Narrative Id</th>
+            <th>User Id</th>
           </tr>
         </thead>
         <tbody>
@@ -27,13 +28,14 @@
       <script>
         $(document).ready(function () {
           $('#data').DataTable({
-            ajax: '/narration/info',
+            ajax: '/datatable7/info',
+            select: true,
             columns: [
-              {data: 'tale_narrative_id', orderable: false, searchable: false},
-              {data: 'tale_narrative_correctness', orderable: false, searchable: false},
+              {data: 'tale_id'},
               {data: 'tale_narrative', searchable: false},
+              {data: 'tale_narrative_id', orderable: false, searchable: false},
+              {data: 'user_id'}
             ],
-            pageLength:5,
           });
         });
       </script>

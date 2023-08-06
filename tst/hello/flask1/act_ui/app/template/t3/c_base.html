@@ -1,21 +1,28 @@
-<html>
+<!doctype html>
+<html lang="en">
     <head>
-      <title>MyApp</title>
+        <meta charset="UTF-8" />
+        <title>{{title}}</title>
+        {% block head_style %}{% endblock %}
     </head>
     <body>
         <header>
             <a href="/" class='nav-bar-text-link'>Index</a>
-            <a href="/summary" class='nav-bar-text-link'>Summary</a>
+            <a href="/overview" class='nav-bar-text-link'>Overview</a>
             <a href="/board0" class='nav-bar-text-link'>board0</a>
             <a href="/board1" class='nav-bar-text-link'>board1</a>
             <a href="/board2" class='nav-bar-text-link'>board2</a>
             <a href="/board3" class='nav-bar-text-link'>board3</a>
-            <a href="/feedback" class='nav-bar-text-link'>feedback</a>
-            <a href="/editable" class='nav-bar-text-link'>editable</a>
+            <a href="/feedback4" class='nav-bar-text-link'>feedback</a>
+            <a href="/editable5" class='nav-bar-text-link'>editable</a>
+            <a href="/datatable7" class='nav-bar-text-link'>datatable</a>
             <a href="/narration" class='nav-bar-text-link'>Narration</a>
             <a href="/logout" class='nav-bar-text-link'>Logout</a>
         </header>
         {% block content %}{% endblock %}
+
+        {% block scripts %}{% endblock %}
     </body>
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='app_style.css')}}">
+
 </html>

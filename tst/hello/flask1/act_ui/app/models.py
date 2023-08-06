@@ -62,17 +62,22 @@ class Post(db.Model):
 class Tale(db.Model):
     tale_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    tale_timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    #tale_timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     tale_narrative = db.Column(db.String(260))
     tale_narrative_id = db.Column(db.Integer)
+    tale_narrative_submission_date = db.Column(db.DateTime)
+    tale_narrative_correctness = db.Column(db.String(10))
 
     def __repr__(self):
         return '<Tale id:{}>'.format(self.tale_id)
 
     def to_dict(self):
+        #            'tale_timestamp': self.tale_timestamp,
         return {
             'tale_id': self.tale_id,
             'user_id': self.user_id,
-            'tale_timestamp': self.tale_timestamp,
             'tale_narrative': self.tale_narrative,
+            'tale_narrative_id': self.tale_narrative_id,
+            'tale_narrative_submission_date': self.tale_narrative_submission_date,
+            'tale_narrative_correctness': self.tale_narrative_correctness,
         }

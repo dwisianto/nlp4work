@@ -1,13 +1,22 @@
+/* red
+   background-color: rgb(166, 26, 64);
+   blue
+   background-color: rgb(26, 38, 166);
+*/
 header {
   height: 49px;
   line-height: 49px;
-  background-color: rgb(166, 26, 64);
+  background-color: rgb(26, 38, 166);
   width: 100%;
 }
 
+/*
+ font-family: Roboto, "Helvetica Neue", sans-serif;
+ font-family: Roboto, "Helvetica NeueThin", sans-serif;
+ */
 .nav-bar-text-link, .nav-bar-text-link:hover {
   color: white;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, "Helvetica NeueThin", sans-serif;
   text-decoration: none;
   font-size: 18px;
   margin-left: 18px;

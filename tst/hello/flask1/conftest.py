@@ -86,6 +86,14 @@ def act_config(request):
     return act_conf
 
 
+
+
+
+@pytest.fixture(scope="function")
+def act_faker(request):
+    import faker
+    return faker.Faker()
+
 #@pytest.fixture()
 #def app_fixture():
 #    app.config['TESTING'] = True

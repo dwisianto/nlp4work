@@ -1,10 +1,15 @@
+
 from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import PasswordField
 from wtforms import StringField
 from wtforms import SubmitField
+from wtforms import SelectField
+
 from wtforms.validators import DataRequired
 from wtforms.widgets import TextArea
+
+
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -28,4 +33,7 @@ class FeedbackForm(FlaskForm):
 class TaleForm(FlaskForm):
     narrative_id = StringField('Narrative Id', validators=[DataRequired()])
     narrative = StringField('Narrative', widget=TextArea())
+    narrative_correctness = SelectField('Correctness',
+                                        choices=[('yes','yes'),
+                                                 ('no','no')])
     submit = SubmitField('Submit')

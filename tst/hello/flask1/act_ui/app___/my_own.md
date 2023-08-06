@@ -3,6 +3,12 @@
 
 ## 08
 
+### 03 Oracle 
+
+https://github.com/ricaportela/flask-oracle/blob/master/app.py
+- https://github.com/xxshubhamxx/flask-oracle-crud
+
+
 ### 01 TextArea
 
 https://stackoverflow.com/questions/7979548/how-to-render-my-textarea-with-wtforms

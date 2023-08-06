@@ -17,10 +17,9 @@ import shlex
 import shutil
 import subprocess
 
-import faker
+
 
 from werkzeug.security import generate_password_hash
-
 
 
 #
@@ -72,159 +71,39 @@ class TestDbInit:
 
     # @pytest.mark.skip
     @pytest.mark.order(3)
-    def test_db_init_i3_user_admin(self, act_config):
+    @pytest.mark.parametrize("user_name,user_pass",
+                             [('admin', 'admin'),
+                              ('guest', 'guest'),
+                              ('friend', 'friend'),
+                              ])
+    def test_db_init_i3_user_admin(self, act_config, act_faker, user_name, user_pass):
+
+        from datetime import datetime
 
         from app import create_app
         app_tst = create_app() # create_app().test_client
-        #app_tst.config['TESTING'] = True
-        #app_tst.config['WTF_CSRF_ENABLED'] = False
-        #app_tst.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
-        #app_tst.config['DATABASE_URL'] = ''
 
         from app.extensions import db
-        from app.models import User, Post, Tale
+        from app.models import User, Tale
 
         app_tst.app_context().push()
         db.create_all()
 
-        u = User(username='admin')#, email='john@example.com')
-        u.set_password('admin')
+        u = User(username=user_name,
+                password_hash = generate_password_hash(user_pass))
         db.session.add(u)
         db.session.commit()
 
-        user_now = User.query.filter_by(username=u.username).first_or_404()
-
-        u1 = User.query.get(1)
-        p1 = Post(body='admin: first post!', author=u1)
-        db.session.add(p1)
-        db.session.commit()
-
-        u1 = User.query.get(1)
-        p1 = Post(body='admin: second post!', author=u1)
-        db.session.add(p1)
-        db.session.commit()
-
-
-
-    #@pytest.mark.skip
-    @pytest.mark.order(4)
-    def test_db_init_i4_user_guest(self, act_config):
-
-        from app import create_app
-        app_tst = create_app() # create_app().test_client
-        #app_tst.config['TESTING'] = True
-        #app_tst.config['WTF_CSRF_ENABLED'] = False
-        #app_tst.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
-        #app_tst.config['DATABASE_URL'] = ''
-
-        from app.extensions import db
-        from app.models import User, Post
-
-
-        app_tst.app_context().push()
-        db.create_all()
-
-
-        u = User(username='guest')#, email='john@example.com')
-        u.set_password('guest')
-        db.session.add(u)
-        db.session.commit()
-
-        u1 = User.query.get(1)
-        p1 = Post(body='guest: first post!', author=u1)
-        db.session.add(p1)
-        db.session.commit()
-
-    @pytest.mark.order(5)
-    def test_db_init_f5_user_faker(self, act_config):
-
-        num_users = 10  # number of Users
-        LOG.info("faker3 "+str(num_users))
-        LOG.info(" num_users " + str(num_users))
-        from app import create_app
-
-        app_tst = create_app() # create_app().test_client
-        #app_tst.config['TESTING'] = True
-        #app_tst.config['WTF_CSRF_ENABLED'] = False
-        #app_tst.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
-        #app_tst.config['DATABASE_URL'] = ''
-
-        from app.extensions import db
-        from app.models import User, Post
-
-
-        app_tst.app_context().push()
-        db.create_all()
-
-        a_faker = faker.Faker()
-        user_name_set = set()
-        for i in range(num_users):
-            one_user_name = str(a_faker.email().lower().split('@')[0])
-
-            if not one_user_name in user_name_set:
-                one_user = User(username=one_user_name,
-                                password_hash=generate_password_hash(one_user_name))
-                user_name_set.add(one_user_name)
-                db.session.add(one_user)
-                db.session.commit()
-
-
-        LOG.info(f'Added {num_users} fake users to the database.')
-
-
-    @pytest.mark.order(5)
-    def test_db_init_f6_user_friend(self, act_config):
-
-        from app import create_app
-        app_tst = create_app() # create_app().test_client
-        #app_tst.config['TESTING'] = True
-        #app_tst.config['WTF_CSRF_ENABLED'] = False
-        #app_tst.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
-        #app_tst.config['DATABASE_URL'] = ''
-
-        from app.extensions import db
-        from app.models import User, Post
-
-
-        app_tst.app_context().push()
-        db.create_all()
-
-        u_id = 'friend'
-        u = User(username=u_id,
-                password_hash = generate_password_hash(u_id))
-        db.session.add(u)
-        db.session.commit()
-
-
-        u0 = User.query.get(1)
-        for a_user in User.query.all():
-            if a_user.username == u_id:
-                u0 = a_user
-
-        num_posts = 10
-        a_faker = faker.Faker()
-
-        for i in range(num_posts):
-            #one_user_name = str(a_faker.email().lower().split('@')[0])
-            one_post= a_faker.email()
-            p1 = Post(body=one_post, author=u0)
-            db.session.add(p1)
+        # Tales
+        u0 = User.query.filter_by(username=u.username).first_or_404()
+        for i in range(act_config.tale_num_of_narrative):
+            t0 = Tale(tale_narrative=act_faker.text(),
+                      tale_narrative_id=act_faker.random_int(),
+                      tale_narrative_correctness="no",
+                      tale_narrative_submission_date=act_faker.date_time_between(start_date='-1y',end_date='now'),
+                      author=u0)
+            db.session.add(t0)
             db.session.commit()
-
-
-
-# @pytest.mark.order(after="TestDbInitSummary")
-# class TestDbInitTale:
-#    @pytest.mark.order(1)
-#    def test_db_init_tale_t1_config(self, act_config):
-#        pass
-#
-#    @pytest.mark.order(1)
-#    def test_db_init_tale_t2_config(self, act_config):
-#        pass
-
-
-
 
 
 @pytest.mark.order(after="TestDbInit")
@@ -246,69 +125,34 @@ class TestDbInitSummary:
         LOG.info(os.getenv('FLASK_APP'))
         LOG.info(os.getenv('SECRET_KEY'))
 
-        #@pytest.mark.order(2)
-        #def test_db_init_faker_f2_user_faker(self, act_config):
-
-        #from app import create_app
-        #app = create_app()
-        #from app.extensions import db
-        #from app.models import User, Post
-
-        #app_tst.app_context().push()
-        #db.create_all()
-
-        #with app.app_context():
-        #db.engine.dispose()
-        #u = User(username='admin9')#, email='admin@example.com')
-        #u.set_password('admin9')
-        #db.session.add(u)
-        #db.session.commit()
-
-
 
     @pytest.mark.order(9)
     def test_db_init_i9_user_query_all(self, act_config):
 
-        #
-        #
-        #
         from app import create_app
         app = create_app()
         from app.extensions import db
-        from app.models import User, Post
+        from app.models import User, Tale
         with app.app_context():
             db.engine.dispose()
-            u = User(username='admin9')  # , email='admin@example.com')
-            u.set_password('admin9')
-            db.session.add(u)
-            db.session.commit()
 
-            u = User(username='guest9')#, email='john@example.com')
-            u.set_password('guest9')
-            db.session.add(u)
-            db.session.commit()
-
-            u1 = User.query.get(1)
-            p1 = Post(body='u1 > post1 ', author=u1)
-            db.session.add(p1)
-            db.session.commit()
-
-            u1 = User.query.get(2)
-            p1 = Post(body='u2 > post2 ', author=u1)
-            db.session.add(p1)
-            db.session.commit()
-
-            u1 = User.query.get(3)
-            p1 = Post(body='u2 > post3 ', author=u1)
-            db.session.add(p1)
-            db.session.commit()
-
-
-            u1_posts_all = u1.posts.all()
-            for p in u1_posts_all:
-                LOG.info(" {} {} {} ".format(p.id, p.author.username, p.body))
-                LOG.info(" {} {} ".format(u.id, u.username))
+            for t in Tale.query.all():
+                LOG.info(" {} {} {} {} {} ".format( t.tale_id,
+                                                    t.tale_narrative_id,
+                                                    t.tale_narrative,
+                                                    t.user_id,
+                                                    t.author.username))
 
             for u in User.query.all():
                 LOG.info(str(u))
+                LOG.info(" {} {} ".format(u.id, u.username))
 
+# Notes
+#
+# 2023-08-02
+#
+#        app_tst = create_app() # create_app().test_client
+#        #app_tst.config['TESTING'] = True
+#        #app_tst.config['WTF_CSRF_ENABLED'] = False
+#        #app_tst.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
+#        #app_tst.config['DATABASE_URL'] = ''

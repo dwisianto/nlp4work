@@ -61,6 +61,7 @@ class ActConfig:
     # MY_DB_SQLITE = 'migrations_db.sqlite'
     # MY_DB_DIR = 'migrations'
     # MY_APP_PY = 'my_app.py'
+    tale_num_of_narrative = 15
 
     def __init__(self, seed_dict):
         self.seed_dict=seed_dict

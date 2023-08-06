@@ -7,8 +7,13 @@
       <hr>
       <div id="table"></div>
     </div>
-    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
-    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+
+    <!-- <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script> -->
+    <!-- <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" /> -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='gridjs/mermaid.min.css') }}">
+    <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='gridjs/gridjs.umd.js' ) }}"></script>
+
+
     <style>
       body {
         font-family: Sans-Serif;
@@ -32,13 +37,13 @@
 
       new gridjs.Grid({
         columns: [
-          { id: 'post_id', name: 'post_id' },
-          { id: 'body', name: 'body', 'attributes': editableCellAttributes },
-          { id: 'post_timestamp', name: 'timestamp', 'hidden': true },
+          { id: 'tale_id', name: 'post_id' },
+          { id: 'tale_narrative', name: 'body', 'attributes': editableCellAttributes },
+          { id: 'tale_timestamp', name: 'timestamp', 'hidden': true },
           { id: 'user_id', name: 'user_id',  'hidden': true },
         ],
         server: {
-          url: '/api/data',
+          url: '/editable5/info',
           then: results => results.data,
           total: results => results.total,
         },
@@ -55,7 +60,7 @@
           multiColumn: true,
           server: {
             url: (prev, columns) => {
-              const columnIds = ['post_id', 'body', 'post_timestamp', 'user_id' ];
+              const columnIds = ['tale_id', 'tale_narrative', 'time_timestamp', 'user_id' ];
               const sort = columns.map(col => (col.direction === 1 ? '+' : '-') + columnIds[col.index]);
               return updateUrl(prev, {sort});
             },
@@ -82,7 +87,7 @@
       tableDiv.addEventListener('focusout', ev => {
         if (ev.target.tagName === 'TD') {
           if (savedValue !== ev.target.textContent) {
-            fetch('/api/data', {
+            fetch('/editable5/info', {
               method: 'POST',
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify({
