@@ -1,0 +1,8 @@
+conda create --name p9 python=3.9
+conda create --name p9net8 --clone p9
+conda activate p9net8
+pip install -r act___/requirement1.pytest.txt
+pip install -r act___/requirement2.plotly.txt
+pip install -r act___/requirement3.flask.txt
+ln -s act___/dot_env ./act_ui/.env
+source act___/dot_env.sh 

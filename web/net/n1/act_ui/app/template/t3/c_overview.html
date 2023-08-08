@@ -1,0 +1,62 @@
+{% extends "c_base.html" %}
+
+{% block content %}
+    <div class="container">
+      <h1> {{ title }} - {{user.username}} </h1>
+      <hr>
+      <table id="data" class="table table-striped">
+        <thead>
+          <tr>
+            <th>UserId</th>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Correctness</th>
+            <th>Narrative</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/jquery-3.6.0.min.js' ) }}"></script>
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/bootstrap.min.css') }}">
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/bootstrap.min.js' )}}"></script>
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/datatables.bootstrap5.css') }}">
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/jquery.dataTables.js' )}}"></script>
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/dataTables.bootstrap5.js' )}}"></script>
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/select.dataTables.min.css') }}">
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/dataTables.select.min.js' )}}"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/buttons.dataTables.min.css') }}">
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/dataTables.buttons.min.js' )}}"></script>
+
+  
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/datatables.min.css') }}">
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/datatables.min.js' )}}"></script>  
+
+  <script>
+    $(document).ready(function () {
+      $('#data').DataTable({
+        ajax: '/overview/info',
+        columns: [
+          {data: 'user_id',orderable: true, searchable: false},
+          {data: 'tale_narrative_id', orderable: true, searchable: false},
+          {data: 'tale_narrative_submission_date', orderable: true, searchable: true},
+          {data: 'tale_narrative_correctness', orderable: true, searchable: false},
+          {data: 'tale_narrative', searchable: true},
+        ],
+        dom: 'B<"top" f>t<"bottom" lip><"clear">',
+        buttons: ['excel','csv'],
+        pageLength:5,
+        lengthMenu: [ [5,10,20,-1],[5,10,20, 'All'] ],
+      });
+    });
+  </script>
+
+{% endblock %}
