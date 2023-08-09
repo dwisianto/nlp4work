@@ -33,7 +33,7 @@ form {
     <div class="container">
       <h3>{{ title }}</h3>
       <hr>
-      <table id="data" class="table table-striped">
+      <table id="tale_table" class="table table-striped">
         <thead>
           <tr>
                 <th>Id</th>
@@ -49,23 +49,32 @@ form {
 
     </div>
 
-
+    <!--
+    -->
     <div class="modal" id="editModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Modal title</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <h5 class="modal-title">Narration</h5>
+            <button type="button" data-bs-dismiss="modal"><span>&times;</span></button>            
           </div>
           <div class="modal-body">
-            <p>Modal body text goes here.</p>
+            <!--            <form id="myForm" method="post"> -->
+              <label>Narrative Id    : </label><input id="modal_tale_narrative_id" name="tale_narrative_id"><br><br>
+              <label>Correctness     : </label><input id="modal_tale_narrative_correctness" name="tale_narrative_correctness"><br><br>
+              <label>Submission Date : </label><input id="modal_tale_narrative_submission_date" name="tale_narrative_submission_date"><br><br>
+              <label>Tale Id         :</label><input id="modal_tale_id" name="tale_id"><br><br>
+              <label>User Id         : </label><input id="modal_user_id" name="user_id"><br><br>
+              <label>Narrative : </label><input id="modal_narrative" name="tale_narrative"><br><br>
+              <!--<button id="myFormSubmit" type="submit" >Submit</button> -->
+            <!-- </form> -->
           </div>
+
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save changes</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button id="modal-btn-submit" type="button" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           </div>
+
         </div>
       </div>
     </div>
@@ -76,28 +85,123 @@ form {
 
 {% block scripts %}
 
-    <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/jquery-3.6.0.min.js' ) }}"></script>
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/jQuery-3.7.0/jquery-3.7.0.min.js' ) }}"></script>
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/bootstrap.min.css') }}">
-    <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/bootstrap.min.js' )}}"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/Bootstrap-5-5.3.0/css/bootstrap.min.css') }}">
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/Bootstrap-5-5.3.0/js/bootstrap.bundle.min.js' )}}"></script>
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/datatables.bootstrap5.css') }}">
-    <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/jquery.dataTables.js' )}}"></script>
-    <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/dataTables.bootstrap5.js' )}}"></script>
-
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/select.dataTables.min.css') }}">
-    <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/dataTables.select.min.js' )}}"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/buttons.dataTables.min.css') }}">
-    <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/dataTables.buttons.min.js' )}}"></script>
-
-    <!--
-  <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-    -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.css"/>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.16/b-1.5.1/b-html5-1.5.1/datatables.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/DataTables-1.13.6/css/datatables.bootstrap5.css') }}">
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/DataTables-1.13.6/js/jquery.dataTables.min.js' )}}"></script>
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/DataTables-1.13.6/js/dataTables.bootstrap5.min.js' )}}"></script>
 
 
-      <script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/Select-1.7.0/css/select.dataTables.min.css') }}">
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/Select-1.7.0/js/dataTables.select.min.js' )}}"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/Buttons-2.4.1/css/buttons.dataTables.min.css') }}">
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/Buttons-2.4.1/js/dataTables.buttons.min.js' )}}"></script>
+  
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/datatables.min.css') }}">
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/datatables.min.js' )}}"></script>  
+  
+
+  <script>
+    function my_table_init(){
+      var tale_table_var = $('#tale_table').DataTable({
+        ajax: '/narration/info',
+        dom: 'Bflrtip',
+        buttons: [ 'excel', 'csv' ],
+        columns: [
+          {data: 'tale_narrative_id', orderable: true, searchable: true},
+          {data: 'tale_narrative_submission_date', orderable: true, searchable: true},
+          {data: 'tale_narrative_correctness', orderable: true, searchable: true},
+          {data: 'tale_narrative', searchable: true},
+        ],
+      });
+
+      $('#tale_table').on('click', 'tr', function () {
+              var name = $('td', this).eq(1).text();
+              
+              a_row_obj=tale_table_var.row(this).data();
+              console.log(a_row_obj.user_id);
+              console.log(a_row_obj.tale_id);
+              console.log(a_row_obj.tale_narrative_id);
+              console.log(a_row_obj.tale_narrative_correctness);
+              console.log(a_row_obj.tale_narrative_submission_date);
+              console.log(a_row_obj.tale_narrative);
+
+              $('#modal_user_id').val(a_row_obj.user_id);
+              $('#modal_tale_id').val(a_row_obj.tale_id);
+              $('#modal_tale_narrative_id').val(a_row_obj.tale_narrative_id);
+              $('#modal_tale_narrative_correctness').val(a_row_obj.tale_narrative_correctness);
+              $('#modal_tale_narrative_submission_date').val(a_row_obj.tale_narrative_submission_date);
+              $('#modal_narrative').val(a_row_obj.tale_narrative);
+
+              $('#editModal').modal('show');
+      });
+
+
+      $('#modal-btn-submit').click(function(){
+        console.log("serialize1");
+        console.log($('#myForm').serializeArray());
+        console.log("serialize2");
+        var myJson= JSON.stringify( {
+                "tale_id": $('#modal_tale_id').val(),
+                "user_id":$('#modal_user_id').val(),
+                "tale_narrative":$('#modal_narrative').val(),
+                "tale_narrative_id":$('#modal_tale_narrative_id').val(),
+                "tale_narrative_correctness":$('#modal_tale_narrative_correctness').val(),
+                "tale_narrative_submission_date":$('#modal_tale_narrative_submission_date').val(),
+
+        } );
+        var myJson1= JSON.stringify( {
+                "tale_id": 64,
+                "tale_narrative": "Finally works again",
+                "tale_narrative_correctness": "yes",
+                "tale_narrative_id": 103,
+                "tale_narrative_submission_date": "Mon, 17 Oct 2022 12:00:13 GMT",
+                "user_id": 3
+        } );
+        console.log(myJson)
+        console.log("serialize3");
+
+
+        $.ajax({
+          url: '/narration/info',
+          type: "POST",
+          dataType: 'json',
+          data: myJson,
+          contentType: 'application/json;charset=UTF-8',
+          success: function( success_data ) {
+            console.log( "success");
+            console.log( success_data );
+
+          },
+          error: function(xhr, status, error) {
+            console.log("error");
+            console.log(xhr);
+            console.log(status);
+            console.log(status);
+          },
+        })
+
+        // Close the modal
+        $('#editModal').modal('toggle');
+        location.reload(true);
+      });
+
+    }
+
+    function my_table_callback_pop_up(){
+      console.log('my_table_callback_pop_up')
+    }
+    
+    $(document).ready(function () {
+        my_table_init();
+        my_table_callback_pop_up();
+    })
+  </script>
+
+<!--
         $(document).ready(function () {
           $('#data').DataTable({
             ajax: '/narration/info',
@@ -109,20 +213,20 @@ form {
               {data: 'tale_narrative_correctness', orderable: true, searchable: true},
               {data: 'tale_narrative', searchable: true},
             ],
-            pageLength:3,
+            dom: 'B<"top" f>t<"bottom" lip><"clear">',
+            buttons: ['excel','csv'],
+            pageLength:5,
+            lengthMenu: [ [5,10,20,-1],[5,10,20, 'All'] ],
           });
 
-          /*
-            $('#data').on('click', 'tr', function () {
-                var name = $('td', this).eq(1).text();
-                console.log( $('td',this).eq(1).text() );
-                $('#editModal').modal('show');
-            });
-            */
-
-        });
-      </script>
-
+          
+          $('#data').on('click', 'tr', function () {
+              var name = $('td', this).eq(1).text();
+              console.log( $('td',this).eq(1).text() );
+              $('#editModal').modal('show');
+          });
+          
+        -->
     <!--
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>

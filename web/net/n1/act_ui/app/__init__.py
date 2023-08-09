@@ -7,6 +7,7 @@ import os
 from flask import Flask
 from flask.helpers import get_root_path
 from flask_login import login_required
+from flask_cors import CORS
 
 import dash
 import dash_bootstrap_components as dbc
@@ -19,6 +20,7 @@ def create_app():
     server = Flask(__name__,
                    template_folder=MyConfigObject.LOC_TEMPLATE,
                    static_folder=MyConfigObject.LOC_STATIC)
+    CORS(server)
     server.config.from_object(MyConfigObject)
     server.logger.addHandler(my_log)
     server.testing = True  # return a test_client inside a pytest case

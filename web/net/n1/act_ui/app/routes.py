@@ -45,7 +45,10 @@ def index():
     return out_url
 
 
+from flask_cors import cross_origin 
+
 @server_bp.route('/favicon.ico')
+@cross_origin()
 def favicon():
     return send_from_directory(os.path.join(server_bp.root_path, MyConfigObject.LOC_STATIC_FAVICON),
                                MyConfigObject.LOC_STATIC_FAVICON_NAME,
@@ -201,7 +204,6 @@ def overview_info():
     return {'data': [ a_tale.to_dict() for a_tale in tale_query]}
 
 
-
 @server_bp.route('/narration/', methods=['GET', 'POST'])
 @login_required
 def narration():
@@ -210,7 +212,7 @@ def narration():
     if form.validate_on_submit():
 
         # get the current_user
-        u0 = User.query.filter_by(username=current_user.username).first_or_404()
+        u0 = User.query.filter_by(username=current_user.username).first()
         my_log.info(" narration user_id: {} and username: {} ".format(u0.id, u0.username))
 
         # current form
@@ -256,7 +258,7 @@ def narration_info():
     tale_query = Tale.query
 
     # filter by current_user
-    user_now = User.query.filter_by(username=current_user.username).first_or_404()
+    user_now = User.query.filter_by(username=current_user.username).first()
     tale_query = Tale.query.filter_by(user_id=user_now.id)
 
     total = tale_query.count()
@@ -275,15 +277,17 @@ def narration_info_update():
 
     request_json = request.get_json()
     my_log.info(' narration_info_update ' + str(request_json))
-    if 'id' not in request_json:
+    if 'tale_id' not in request_json:
         abort(400)
 
-    request_post = Post.query.get(request_json['id'])
-    my_log.info(' editable_info_posts_update > request_post:' + str(request_post) )
-    for field in ['body']:
+    request_post = Tale.query.get(request_json['tale_id'])
+    my_log.info('narration_info_posts_update > request_post:' + str(request_post))
+
+    # body
+    for field in ['tale_narrative']:
         if field in request_json:
-            my_log.info(' editable_info_posts_update > field > updating' + str(field) + ' with ' + request_json[field] + 'timestamp' + str(datetime.utcnow) )
+            my_log.info('narration_info_posts_update > field > updating' + str(field) + ' with ' + request_json[field] + 'timestamp' + str(datetime.utcnow) )
             setattr(request_post, field, request_json[field])
             setattr(request_post, 'timestamp', datetime.utcnow())
     db.session.commit()
-    return '', 204
+    return request_json, 204
