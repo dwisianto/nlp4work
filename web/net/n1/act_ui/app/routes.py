@@ -10,7 +10,8 @@ from flask import url_for
 from flask import abort
 from flask import flash
 from flask import session  # flask-login timeout
-from flask import send_from_directory  # static directory to favicon.ido
+from flask import send_from_directory  # static directory to favicon.ico
+from flask_cors import cross_origin
 
 from flask_login import current_user
 from flask_login import login_required
@@ -44,8 +45,6 @@ def index():
 
     return out_url
 
-
-from flask_cors import cross_origin 
 
 @server_bp.route('/favicon.ico')
 @cross_origin()
@@ -81,7 +80,7 @@ def login():
 
         return redirect(next_page)
 
-    return render_template('c_login.html', title='Sign In', form=form)
+    return render_template('c_login.html', title='Login', form=form)
 
 
 @server_bp.route('/logout/')
@@ -89,48 +88,7 @@ def login():
 def logout():
     my_log.info('logging_out ')
     logout_user()
-    # return redirect(url_for('/board0a/'))
     return redirect(url_for('main.index'))
-
-
-#@server_bp.route('/register/', methods=['GET', 'POST'])
-#def register():
-#    if current_user.is_authenticated:
-#        return redirect(url_for('main.index'))
-#
-#    form = RegistrationForm()
-#    if form.validate_on_submit():
-#        user = User(username=form.username.data)
-#        user.set_password(form.password.data)
-#        db.session.add(user)
-#        db.session.commit()
-#
-#        return redirect(url_for('main.login'))
-#
-#    return render_template('register.html', title='Register', form=form)
-
-
-#@server_bp.route('/feedback/', methods=['GET', 'POST'])
-#@login_required
-#def feedback():
-#    form = FeedbackForm()
-#    if form.validate_on_submit():
-#
-#        for u in User.query.all():
-#            if current_user.username == u.username:
-#                u0 = u
-#        my_log.info(" feedback {} {} ".format(u0.id, u0.username))
-#
-#        p0 = Post(body=form.feedback.data, author=u0)
-#        db.session.add(p0)
-#        db.session.commit()
-#
-# user = User(username=form.username.data)
-# user.set_password(form.password.data)
-# db.session.add(user)
-# db.session.commit()
-#        return redirect(url_for('main.login'))
-# return render_template('feedback.html', title='Feedback', form=form)
 
 
 @server_bp.route('/exploration/')
@@ -163,10 +121,6 @@ def feedback4a():
     return render_template('c_feedback.html', title='Feedback', form=form)
 
 
-
-
-
-
 @server_bp.route('/datatable7/', methods=['GET'])
 @login_required
 def datatable7():
@@ -176,7 +130,6 @@ def datatable7():
 @server_bp.route('/datatable7/info')
 @login_required
 def datatable7_data():
-    #tale_query = Tale.query
 
     # filter by current_user
     user_now = User.query.filter_by(username=current_user.username).first_or_404()
@@ -185,12 +138,11 @@ def datatable7_data():
     return {'data': [ a_tale.to_dict() for a_tale in tale_query]}
 
 
-
-
-@server_bp.route('/overview/', methods=['GET'])
+@server_bp.route('/overview', methods=['GET'])
 @login_required
 def overview():
     return render_template('c_overview.html', title='Overview', user=current_user)
+
 
 @server_bp.route('/overview/info')
 @login_required
@@ -252,6 +204,7 @@ def narration():
                            form=form,
                            user=current_user)
 
+
 @server_bp.route('/narration/info', methods=['GET'])
 @login_required
 def narration_info():
@@ -271,6 +224,7 @@ def narration_info():
 
 
 @server_bp.route('/narration/info', methods=['POST'])
+@login_required
 def narration_info_update():
 
     from datetime import datetime
@@ -278,16 +232,40 @@ def narration_info_update():
     request_json = request.get_json()
     my_log.info(' narration_info_update ' + str(request_json))
     if 'tale_id' not in request_json:
-        abort(400)
+        request_json['tale_id'] = len(Tale.query.all()) #abort(400)
 
-    request_post = Tale.query.get(request_json['tale_id'])
-    my_log.info('narration_info_posts_update > request_post:' + str(request_post))
+    response_code=404
+    if int(request_json['tale_id']) < len(Tale.query.all()):
 
-    # body
-    for field in ['tale_narrative']:
-        if field in request_json:
-            my_log.info('narration_info_posts_update > field > updating' + str(field) + ' with ' + request_json[field] + 'timestamp' + str(datetime.utcnow) )
-            setattr(request_post, field, request_json[field])
-            setattr(request_post, 'timestamp', datetime.utcnow())
-    db.session.commit()
-    return request_json, 204
+        request_post = Tale.query.get(request_json['tale_id'])
+        my_log.info('narration_info_posts_update > request_post:' + str(request_post))
+        # body
+        setattr(request_post, 'timestamp', datetime.utcnow())
+        for field in ['tale_narrative', 'tale_narrative_id', 'tale_narrative_submission_date', 'tale_narrative_correctness']:
+
+            if field in request_json:
+                my_log.info('narration_info_posts_update > field > updating' + str(field) + ' with ' + request_json[field] + 'timestamp' + str(datetime.utcnow) )
+                setattr(request_post, field, request_json[field])
+
+
+        db.session.commit()
+        response_code=204
+    else:  # new tale
+        # get the current_user
+        u0 = User.query.filter_by(username=current_user.username).first()
+        my_log.info(" narration user_id: {} and username: {} ".format(u0.id, u0.username))
+
+        p0 = Tale(user_id=u0.id,
+                  tale_narrative=request_json['tale_narrative'],
+                  tale_narrative_id=request_json['tale_narrative_id'],
+                  tale_narrative_correctness=request_json['tale_narrative_correctness'],
+                  tale_narrative_timestamp=datetime.utcnow(),
+                  author=u0)
+        db.session.add(p0)
+
+        db.session.commit()
+        response_code=200
+
+
+
+    return '', response_code

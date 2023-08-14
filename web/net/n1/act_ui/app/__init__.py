@@ -23,7 +23,7 @@ def create_app():
     CORS(server)
     server.config.from_object(MyConfigObject)
     server.logger.addHandler(my_log)
-    server.testing = True  # return a test_client inside a pytest case
+    server.testing = True  # a test_client can be returned inside a pytest case
 
     # [] extension
     register_extensions(server)
@@ -37,7 +37,6 @@ def create_app():
                        base_pathname=b3_title.lower()+'0',
                        layout=b3_layout,
                        callback_func_list=[b3_callbacks])
-
 
     # [] blueprint
     register_blueprints(server)

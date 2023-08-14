@@ -3,6 +3,22 @@
 
 ## 08
 
+### 12 
+
+- source dot_env.sh
+- open -a "PyCharm CE"
+- https://stackoverflow.com/questions/63763151/how-to-load-variables-from-env-file-for-pytests
+
+### 10 
+
+- Flask-Admin and Flask-Login
+- https://github.com/viniciuschiele/flask-apscheduler
+- Flask Scheduler
+
+### 09 Pandas to Dataframe
+
+https://github.com/jfdavidson/pandas-to-datatables
+
 ### 03 Oracle 
 
 https://github.com/ricaportela/flask-oracle/blob/master/app.py

@@ -13,7 +13,7 @@ from act.actions import ACT_CONFIG
 class MyConfigUtil:
 
     # Seed Excel File
-    SEED_XLSX=os.environ['SEED_XLSX']
+    SEED_XLSX = os.environ['SEED_XLSX']
     SEED_FULL_PATH=os.environ['SEED_FULL_PATH']
 
     # Plotly Dash
@@ -28,6 +28,7 @@ class MyConfigUtil:
 
     def __init__(self):
         self.SEED_DF=pd.read_excel(os.path.join(self.SEED_FULL_PATH,self.SEED_XLSX))
+
 
 my_config_util = MyConfigUtil()
 

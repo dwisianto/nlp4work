@@ -2,7 +2,6 @@
 
 
 {% block head_style %}
-
 <style type='text/css'>
 form {
   margin:90px;
@@ -13,26 +12,11 @@ form {
 {% endblock %}
 
 {% block content %}
-    <div>
-        <h3>Narration - {{user.username}} </h3>
-        <hr>
-        <form action="" method="post">
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.narrative_id.label }} : {{ form.narrative_id(size=32) }}
-                {{ form.narrative_correctness.label }} : {{ form.narrative_correctness }}<br>
-            </p>
-            <p>
-                {{ form.narrative.label }} : <br>
-                {{ form.narrative(cols="79", rows="4") }}
-                {{ form.submit() }}
-            </p>
-        </form>
-    </div>
+    <h3> {{ title }} - {{user.username}} </h3> <hr>
 
     <div class="container">
-      <h3>{{ title }}</h3>
-      <hr>
+
+      <button id="tale_new_button" type="button" class="btn btn-primary">New</button> <br> <br>
       <table id="tale_table" class="table table-striped">
         <thead>
           <tr>
@@ -46,17 +30,44 @@ form {
         </tbody>
       </table>
 
+    </div> <!-- <div class="container"> -->
 
-    </div>
+
+
+    <div id="tale_new_modal" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+              <h5 class="modal-title">New Narration</h5>
+              <button type="button" data-bs-dismiss="modal"><span>&times;</span></button>
+          </div> <!-- <div class="modal-header"> -->
+
+          <div class="modal-body">
+              <label>Narrative Id    : </label><input id="tale_new_modal_tale_narrative_id" name="tale_narrative_id"><br><br>
+              <label>Correctness     : </label><input id="tale_new_modal_tale_narrative_correctness" name="tale_narrative_correctness"><br><br>
+              <label>Narrative       : </label> <br><br>
+              <textarea id="tale_new_modal_narrative" name="tale_narrative" rows="4" cols="50"> </textarea>
+          </div>
+
+          <div class="modal-footer">
+              <button id="tale_new_btn_create" type="button" class="btn btn-primary">Create</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div> <!-- <div class="modal-footer"> -->
+
+        </div> <!-- <div class="modal-content" -->
+      </div>
+    </div> <!-- <div id= tale_new_modal" -->
+
 
     <!--
     -->
-    <div class="modal" id="editModal" tabindex="-1" role="dialog">
+    <div id="editModal" class="modal"  tabindex="-1" role="dialog">
       <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Narration</h5>
-            <button type="button" data-bs-dismiss="modal"><span>&times;</span></button>            
+            <button type="button" data-bs-dismiss="modal"><span>&times;</span></button>
           </div>
           <div class="modal-body">
             <!--            <form id="myForm" method="post"> -->
@@ -65,7 +76,8 @@ form {
               <label>Submission Date : </label><input id="modal_tale_narrative_submission_date" name="tale_narrative_submission_date"><br><br>
               <label>Tale Id         :</label><input id="modal_tale_id" name="tale_id"><br><br>
               <label>User Id         : </label><input id="modal_user_id" name="user_id"><br><br>
-              <label>Narrative : </label><input id="modal_narrative" name="tale_narrative"><br><br>
+              <label>Narrative : </label> <!--<input id="modal_narrative" name="tale_narrative"><br><br> -->
+              <textarea id="modal_narrative" name="tale_narrative" rows="4" cols="50"> </textarea>
               <!--<button id="myFormSubmit" type="submit" >Submit</button> -->
             <!-- </form> -->
           </div>
@@ -77,7 +89,7 @@ form {
 
         </div>
       </div>
-    </div>
+    </div> <!-- <div id="editModal" -->
 
 {% endblock %}
 
@@ -94,9 +106,9 @@ form {
   <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/DataTables-1.13.6/js/jquery.dataTables.min.js' )}}"></script>
   <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/DataTables-1.13.6/js/dataTables.bootstrap5.min.js' )}}"></script>
 
-
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/Select-1.7.0/css/select.dataTables.min.css') }}">
   <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/Select-1.7.0/js/dataTables.select.min.js' )}}"></script>
+
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='datatables/Buttons-2.4.1/css/buttons.dataTables.min.css') }}">
   <script type="text/javascript" charset="utf8" src="{{ url_for('static', filename='datatables/Buttons-2.4.1/js/dataTables.buttons.min.js' )}}"></script>
   
@@ -105,38 +117,95 @@ form {
   
 
   <script>
-    function my_table_init(){
+
+    /**
+     * Tale New Operation
+     */
+    function tale_table_new_init() {
+      console.log('tale_table_new_init');
+
+      $('#tale_new_button').on('click', function () {
+        $('#tale_new_modal').modal('show');
+      });
+
+      $('#tale_new_btn_create').click(function(){
+        console.log("serialize1");
+
+        var newJsonObj= JSON.stringify( {
+                "tale_narrative":$('#tale_new_modal_narrative').val(),
+                "tale_narrative_id":$('#tale_new_modal_tale_narrative_id').val(),
+                "tale_narrative_correctness":$('#tale_new_modal_tale_narrative_correctness').val(),
+        } );
+        console.log(newJsonObj)
+
+        $.ajax({
+          url: '/narration/info',
+          type: "POST",
+          dataType: 'json',
+          data: newJsonObj,
+          contentType: 'application/json;charset=UTF-8',
+          success: function( success_data ) {
+            console.log( "success");
+            console.log( success_data );
+          },
+          error: function(xhr, status, error) {
+            console.log("error");
+            console.log(xhr);
+            console.log(status);
+            console.log(status);
+          },
+        })
+
+        // Close the modal
+        $('#tale_new_modal').modal('toggle');
+        location.reload(true);
+      });
+
+    }
+
+
+
+
+    // }
+
+
+    /**
+     * Tale Table
+     */
+    function tale_table_init(){
       var tale_table_var = $('#tale_table').DataTable({
         ajax: '/narration/info',
-        dom: 'Bflrtip',
-        buttons: [ 'excel', 'csv' ],
         columns: [
           {data: 'tale_narrative_id', orderable: true, searchable: true},
           {data: 'tale_narrative_submission_date', orderable: true, searchable: true},
           {data: 'tale_narrative_correctness', orderable: true, searchable: true},
           {data: 'tale_narrative', searchable: true},
         ],
-      });
+        dom: 'Bflrtip',
+        buttons: [ 'excel', 'csv' ],
+        pageLength: 3,
+        lengthMenu: [ [3,6,9,-1],[3,6,9, 'All'] ],
+    });
 
       $('#tale_table').on('click', 'tr', function () {
-              var name = $('td', this).eq(1).text();
-              
-              a_row_obj=tale_table_var.row(this).data();
-              console.log(a_row_obj.user_id);
-              console.log(a_row_obj.tale_id);
-              console.log(a_row_obj.tale_narrative_id);
-              console.log(a_row_obj.tale_narrative_correctness);
-              console.log(a_row_obj.tale_narrative_submission_date);
-              console.log(a_row_obj.tale_narrative);
+          var name = $('td', this).eq(1).text();
 
-              $('#modal_user_id').val(a_row_obj.user_id);
-              $('#modal_tale_id').val(a_row_obj.tale_id);
-              $('#modal_tale_narrative_id').val(a_row_obj.tale_narrative_id);
-              $('#modal_tale_narrative_correctness').val(a_row_obj.tale_narrative_correctness);
-              $('#modal_tale_narrative_submission_date').val(a_row_obj.tale_narrative_submission_date);
-              $('#modal_narrative').val(a_row_obj.tale_narrative);
+          a_row_obj=tale_table_var.row(this).data();
+          console.log(a_row_obj.user_id);
+          console.log(a_row_obj.tale_id);
+          console.log(a_row_obj.tale_narrative_id);
+          console.log(a_row_obj.tale_narrative_correctness);
+          console.log(a_row_obj.tale_narrative_submission_date);
+          console.log(a_row_obj.tale_narrative);
 
-              $('#editModal').modal('show');
+          $('#modal_user_id').val(a_row_obj.user_id);
+          $('#modal_tale_id').val(a_row_obj.tale_id);
+          $('#modal_tale_narrative_id').val(a_row_obj.tale_narrative_id);
+          $('#modal_tale_narrative_correctness').val(a_row_obj.tale_narrative_correctness);
+          $('#modal_tale_narrative_submission_date').val(a_row_obj.tale_narrative_submission_date);
+          $('#modal_narrative').val(a_row_obj.tale_narrative);
+
+          $('#editModal').modal('show');
       });
 
 
@@ -144,14 +213,13 @@ form {
         console.log("serialize1");
         console.log($('#myForm').serializeArray());
         console.log("serialize2");
+        //                 "tale_narrative_submission_date":$('#modal_tale_narrative_submission_date').val(),
         var myJson= JSON.stringify( {
                 "tale_id": $('#modal_tale_id').val(),
                 "user_id":$('#modal_user_id').val(),
                 "tale_narrative":$('#modal_narrative').val(),
                 "tale_narrative_id":$('#modal_tale_narrative_id').val(),
                 "tale_narrative_correctness":$('#modal_tale_narrative_correctness').val(),
-                "tale_narrative_submission_date":$('#modal_tale_narrative_submission_date').val(),
-
         } );
         var myJson1= JSON.stringify( {
                 "tale_id": 64,
@@ -191,61 +259,13 @@ form {
 
     }
 
-    function my_table_callback_pop_up(){
-      console.log('my_table_callback_pop_up')
-    }
-    
+    /** Main
+     * Functions
+     */
     $(document).ready(function () {
-        my_table_init();
-        my_table_callback_pop_up();
+        tale_table_new_init();
+        tale_table_init();
     })
   </script>
 
-<!--
-        $(document).ready(function () {
-          $('#data').DataTable({
-            ajax: '/narration/info',
-            dom: 'Bflrtip',
-            buttons: ['csv'],
-            columns: [
-              {data: 'tale_narrative_id', orderable: true, searchable: true},
-              {data: 'tale_narrative_submission_date', orderable: true, searchable: true},
-              {data: 'tale_narrative_correctness', orderable: true, searchable: true},
-              {data: 'tale_narrative', searchable: true},
-            ],
-            dom: 'B<"top" f>t<"bottom" lip><"clear">',
-            buttons: ['excel','csv'],
-            pageLength:5,
-            lengthMenu: [ [5,10,20,-1],[5,10,20, 'All'] ],
-          });
-
-          
-          $('#data').on('click', 'tr', function () {
-              var name = $('td', this).eq(1).text();
-              console.log( $('td',this).eq(1).text() );
-              $('#editModal').modal('show');
-          });
-          
-        -->
-    <!--
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-
-    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.css">
-
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap5.js"></script>
-    -->
-
-
-    <!-- https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css -->
-    <!-- https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js -->
 {% endblock %}

@@ -11,7 +11,7 @@ import pprint as pp
 
 
 import dotenv
-dotenv.load_dotenv()
+
 
 
 #
@@ -86,13 +86,17 @@ def act_config(request):
     return act_conf
 
 
-
-
-
 @pytest.fixture(scope="function")
 def act_faker(request):
     import faker
     return faker.Faker()
+
+
+# https://stackoverflow.com/questions/63763151/how-to-load-variables-from-env-file-for-pytests
+@pytest.fixture(scope='session', autouse=True)
+def load_env():
+    dotenv.load_dotenv()
+
 
 #@pytest.fixture()
 #def app_fixture():
