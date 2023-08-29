@@ -14,7 +14,7 @@ class MyConfigUtil:
 
     # Seed Excel File
     SEED_XLSX = os.environ['SEED_XLSX']
-    SEED_FULL_PATH=os.environ['SEED_FULL_PATH']
+    SEED_FULL_PATH=os.environ['SEED_XLSX_FULL_PATH']
 
     # Plotly Dash
     DASH_DEBUG = False

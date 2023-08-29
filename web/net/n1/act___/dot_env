@@ -7,8 +7,10 @@ FLASK_DEBUG=1
 DATABASE_URL=sqlite:///${PWD}/act_ui/my_app.sqlite
 SECRET_KEY=my_secret
 
-SEED_FILE=my_app.xlsx
-SEED_FULL_PATH=${PWD}/act_ui/
+#SEED_FILE=my_app.xlsx
+#SEED_FULL_PATH=${PWD}/act_ui/
+SEED_XLSX=my_app.xlsx
+SEED_XLSX_FULL_PATH=${PWD}/act_ui/
 
 
 ORACLE_INTAKE_USER=user

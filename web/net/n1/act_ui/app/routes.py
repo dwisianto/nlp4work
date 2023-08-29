@@ -259,7 +259,7 @@ def narration_info_update():
                   tale_narrative=request_json['tale_narrative'],
                   tale_narrative_id=request_json['tale_narrative_id'],
                   tale_narrative_correctness=request_json['tale_narrative_correctness'],
-                  tale_narrative_timestamp=datetime.utcnow(),
+                  tale_narrative_submission_date=datetime.utcnow(),
                   author=u0)
         db.session.add(p0)
 

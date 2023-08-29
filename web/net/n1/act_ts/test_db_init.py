@@ -43,7 +43,7 @@ class TestDbInit:
         LOG.info(os.getenv('SECRET_KEY'))
 
         LOG.info(os.getenv('SEED_XLSX'))
-        LOG.info(os.getenv('SEED_FULL_PATH'))
+        LOG.info(os.getenv('SEED_XLSX_FULL_PATH'))
 
 
     @pytest.mark.order(2)

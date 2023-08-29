@@ -11,7 +11,7 @@ export SECRET_KEY=my_secret
 export PYTHONPATH=${PWD}:$PYTHONPATH
 
 export SEED_XLSX='my_app.xlsx'
-export SEED_FULL_PATH=${PWD}/act_ui
+export SEED_XLSX_FULL_PATH=${PWD}/act_ui
 
 
 echo 
