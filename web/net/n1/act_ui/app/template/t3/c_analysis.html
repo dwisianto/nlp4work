@@ -1,0 +1,35 @@
+{% extends "c_base.html" %}
+
+
+{% block head_style %}
+<style type='text/css'>
+#analysis_div {
+   display: table;
+   width: 100%;
+}
+
+#analysis_form {
+   display: table-cell;
+   text-align: center;
+   vertical-align: middle;
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+    <div id="analysis_div">
+        <form id="analysis_form" action="" method="post">
+            {{ form.hidden_tag() }}
+            <h1>{{ title }}</h1>
+            <hr>
+            <p><label for="analysis_label">Analysis:</label></p>
+            <p>
+                {{ form.analysis_txt(rows='26', cols='94') }}
+            </p>
+            <br>
+            <p>{{ form.analyze_btn() }} {{ form.clear_btn() }}</p>
+        </form>
+    </div>
+
+{% endblock %}

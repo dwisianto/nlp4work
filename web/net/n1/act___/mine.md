@@ -1,10 +1,50 @@
 
 # 2023
 
+## 10
+
+
 ## 09
 
-- ner
+
+### 14 Nested Table
+
+- Nested Table
+- https://jsfiddle.net/headwinds/zz3cH/
+
+### 13 Flask Drag and Drop
+
+- https://dev.to/sm0ke/deploy-flask-with-drag-drop-bootstrap-5-design-16hf
+
+### 12 Jinja loop through list
+
+- https://stackoverflow.com/questions/39523485/jinja2-iterate-through-list-of-tuples
 - 
+
+### 11
+
+- c_analysis_report.html
+- https://stackoverflow.com/questions/9198334/how-tol-build-up-a-html-table-with-a-simple-for-loop-in-jinja2
+
+# 10
+
+- wtform input type reset
+- 
+- https://stackoverflow.com/questions/63757834/how-to-tie-reset-button-to-clear-specific-or-all-fields-in-flask
+
+- ner
+### Nesting DataFrame
+
+- https://stackoverflow.com/questions/51505504/pandas-nesting-dataframes
+- https://www.geeksforgeeks.org/converting-nested-json-structures-to-pandas-dataframes/
+- 
+
+###
+
+- https://www.sec.gov/comments/s7-04-23/s70423-594902.htm
+- wget --recursive --no-parent https://www.sec.gov/comments/s7-04-23/s70423-594902.htm
+- wget  --recursive --no-parent https://www.sec.gov/comments/s7-04-23/
+- wget https://www.sec.gov/comments/s7-04-23/s70423.htm
 
 ## 08
 

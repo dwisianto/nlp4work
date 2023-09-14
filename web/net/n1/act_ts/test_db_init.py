@@ -18,14 +18,13 @@ import shutil
 import subprocess
 
 
-
 from werkzeug.security import generate_password_hash
 
 
 #
 # https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-vii-unit-testing-legacy
 #
-#@pytest.mark.skip
+# @pytest.mark.skip
 class TestDbInit:
 
     @pytest.mark.order(1)
@@ -88,7 +87,7 @@ class TestDbInit:
         app_tst = create_app() # create_app().test_client
 
         from app.extensions import db
-        from app.models import User, Tale
+        from app.models import User, Tale, Analysis
 
         app_tst.app_context().push()
         db.create_all()
@@ -109,7 +108,18 @@ class TestDbInit:
             db.session.add(t0)
             db.session.commit()
 
+        # Analysis
+        u0 = User.query.filter_by(username=u.username).first_or_404()
+        for i in range(act_config.analysis_num_of_txt):
+            a0 = Analysis(author=u0,
+                          analysis_txt=act_faker.text(),
+                          analysis_jsn='')
+            db.session.add(a0)
+            db.session.commit()
 
+
+
+@pytest.mark.skip
 @pytest.mark.order(after="TestDbInit")
 class TestDbInitSummary:
 

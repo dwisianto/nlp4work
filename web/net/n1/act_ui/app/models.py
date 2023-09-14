@@ -21,6 +21,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     tales = db.relationship('Tale', backref='author', lazy='dynamic')
+    analysis = db.relationship('Analysis', backref='author', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -61,4 +62,24 @@ class Tale(db.Model):
             'tale_narrative_id': self.tale_narrative_id,
             'tale_narrative_submission_date': self.tale_narrative_submission_date,
             'tale_narrative_correctness': self.tale_narrative_correctness,
+        }
+
+
+class Analysis(db.Model):
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    analysis_id = db.Column(db.Integer, primary_key=True)
+    analysis_txt = db.Column(db.String())
+    analysis_jsn = db.Column(db.String())
+
+    def __repr__(self):
+        return '<AnalysisId: {} UserId: {} >'.format(self.analysis_id, self.user_id)
+
+    def to_dict(self):
+        return {
+            'user_id': self.user_id,
+            'analysis_id': self.analysis_id,
+            'analysis_txt': self.analysis_txt,
+            'analysis_jsn': self.analysis_jsn,
         }

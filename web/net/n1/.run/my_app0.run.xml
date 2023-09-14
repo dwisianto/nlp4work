@@ -9,14 +9,14 @@
       <env name="FLASK_APP" value="my_app" />
       <env name="FLASK_DEBUG" value="1" />
       <env name="MY_DAT" value="$USER_HOME$/d/db" />
-      <env name="PYTHONPATH" value="$PROJECT_DIR$/web/net/n1" />
+      <env name="PYTHONPATH" value="$PROJECT_DIR$/../n4ui9_dev/web/web/net/n1" />
       <env name="PYTHONUNBUFFERED" value="1" />
       <env name="SECRET_KEY" value="my_secret" />
-      <env name="SEED_FULL_PATH" value="$PROJECT_DIR$/web/net/n1/act_ui" />
       <env name="SEED_XLSX" value="my_app.xlsx" />
+      <env name="SEED_XLSX_FULL_PATH" value="$PROJECT_DIR$/../n4ui9_dev/web/web/net/n1/act_ui" />
     </envs>
     <option name="SDK_HOME" value="/opt/homebrew/anaconda3/envs/p9net8/bin/python" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web/net/n1/act_ui" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../n4ui9_dev/web/web/net/n1/act_ui" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />

@@ -62,6 +62,7 @@ class ActConfig:
     # MY_DB_DIR = 'migrations'
     # MY_APP_PY = 'my_app.py'
     tale_num_of_narrative = 15
+    analysis_num_of_txt = 5
 
     def __init__(self, seed_dict):
         self.seed_dict=seed_dict

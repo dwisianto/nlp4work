@@ -1,5 +1,4 @@
-
-
+import json
 import os
 
 from flask import Blueprint
@@ -20,12 +19,16 @@ from flask_login import logout_user
 from werkzeug.urls import url_parse
 
 
-from app.forms import LoginForm, TaleForm
-from app.models import User, Tale
+from app.forms import LoginForm, TaleForm, AnalysisForm
+from app.models import User, Tale, Analysis
 from app.extensions import db
 from my_cfg import my_log, MyConfigObject
 
-
+#
+#
+#
+import nltk
+import pandas as pd
 
 #
 #
@@ -93,14 +96,14 @@ def logout():
 
 @server_bp.route('/exploration/')
 @login_required
-def board0a():
+def exploration():
     return render_template('c_dash.html', dash_url='/board30/')
 
 
 @server_bp.route('/feedback4/', methods=['GET', 'POST'])
 @login_required
 def feedback4a():
-    form = NarrationForm()
+    form = TaleForm()
     if form.validate_on_submit():
 
         # filter by current_user
@@ -266,6 +269,149 @@ def narration_info_update():
         db.session.commit()
         response_code=200
 
-
-
     return '', response_code
+
+# https://www.nltk.org/howto/chunk.html
+# https://stackoverflow.com/questions/10929941/make-drag-and-drop-uploader-in-flask
+@server_bp.route('/analysis', methods=['GET','POST'])
+@login_required
+def analysis():
+
+    #
+    form = AnalysisForm()
+
+    #
+    # Clear Button
+    #
+    if 'clear_btn' in request.form.keys():
+        form.analysis_txt.data = ''
+        return render_template('c_analysis.html', title='Analysis', form=form)
+
+    elif request.method == 'GET':
+
+        return render_template('c_analysis.html', title='Analysis', form=form)
+
+    elif request.method == 'POST':
+
+        if form.validate_on_submit():
+
+            now_lst = []
+            now_txt = form.analysis_txt.data
+            now_sent = nltk.sent_tokenize(now_txt)
+            for a_sentence_id in range(0,len(now_sent)):
+                a_sentence = now_sent[a_sentence_id]
+                a_snt_token = nltk.word_tokenize(a_sentence)
+                a_snt_tag   = nltk.pos_tag(a_snt_token)
+                a_snt_tag_df = pd.DataFrame(a_snt_tag)
+                a_snt_tag_df_dict = a_snt_tag_df.to_dict()
+                a_snt_tag0=a_snt_tag_df_dict[0].keys()
+                a_snt_tag1= list(a_snt_tag_df_dict[0].values())
+                a_snt_tag2= list(a_snt_tag_df_dict[1].values())
+                now_lst.append({'snt': a_sentence,
+                                'snt_id': a_sentence_id,
+                                'tkn': a_snt_token,
+                                'tag': a_snt_tag,
+                                'tag0': a_snt_tag0,
+                                'tag1': a_snt_tag1,
+                                'tag2': a_snt_tag2,
+                                }
+                               )
+            now_df = pd.DataFrame(now_lst)
+
+            # filter by current_user
+            u0 = User.query.filter_by(username=current_user.username).first_or_404()
+            my_log.info(" feedback {} {} ".format(u0.id, u0.username))
+            my_log.info(now_df.to_json())
+
+            a0 = Analysis(author=u0,
+                          analysis_txt=form.analysis_txt.data,
+                          analysis_jsn=now_df.to_json()
+                        )
+            db.session.add(a0)
+            db.session.commit()
+
+            return render_template('c_analysis_snt.html',
+                                   title='AnalysisReport',
+                                   user=current_user,
+                                   items=now_lst)
+
+    return render_template('c_analysis.html', title='Analysis', form=form)
+
+
+
+
+
+
+@server_bp.route('/analysis/info', methods=['GET'])
+@login_required
+def analysis_info():
+    # filtering using the current_user
+    now_user = User.query.filter_by(username=current_user.username).first()
+    now_query = Analysis.query.filter_by(user_id=now_user.id)
+    now_query_last = Analysis.query.order_by(Analysis.analysis_id.desc()).first()
+
+    df = pd.read_json(now_query_last.analysis_jsn)
+    df = df.reset_index()  # make sure indexes pair with number of rows
+    df_dict = {
+        'snt': str(df['snt']),
+        'tag': str(df['tag']),
+        'tkn': str(df['tkn']),
+        'index': str(df.index),
+        'columns': str(df.columns),
+        'shape': str(df.shape),
+    }
+
+    out_lst = []
+    for row_idx, row in df.iterrows():
+
+        a_snt_token  = row['tkn']
+        a_snt_tag    = row['tag']
+        a_snt_tag_df = pd.DataFrame(row['tag'])
+        a_snt_tag_df_dict = a_snt_tag_df.to_dict()
+        a_snt_tag0 = list(a_snt_tag_df_dict[0].keys())
+        a_snt_tag1 = list(a_snt_tag_df_dict[0].values())
+        a_snt_tag2 = list(a_snt_tag_df_dict[1].values())
+        out_lst.append({'snt': row['snt'],
+                        'snt_id': row_idx,
+                        'tkn': row['tkn'],
+                        'tag': row['tag'],
+                        'tag0': a_snt_tag0,
+                        'tag1': a_snt_tag1,
+                        'tag2': a_snt_tag2,
+                        }
+                       )
+
+    # response
+    return out_lst
+
+
+@server_bp.route('/analysis_report', methods=['GET','POST'])
+@login_required
+def analysis_report():
+
+    # filtering using the current_user
+    now_user = User.query.filter_by(username=current_user.username).first()
+    now_query = Analysis.query.filter_by(user_id=now_user.id)
+    now_query_last = Analysis.query.order_by(Analysis.analysis_id.desc()).first()
+    pd.read_json(now_query_last.analysis_jsn)
+    # my_log.info(
+    # now_query_last.analysis_jsn.
+    # now_df = pd.read_json(
+
+    out_lst = []
+    for an_entry in now_query:
+        out_lst.append(an_entry.to_dict)
+
+    return render_template('c_analysis_report.html',
+                           title='AnalysisReport',
+                           user=current_user,
+                           items=out_lst)
+
+
+
+@server_bp.route('/analysis_token', methods=['GET'])
+@login_required
+def analysis_token():
+    pass
+
+

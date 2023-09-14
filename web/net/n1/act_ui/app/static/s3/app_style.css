@@ -4,25 +4,34 @@
    background-color: rgb(26, 38, 166);
 */
 header {
-  height: 49px;
-  line-height: 49px;
-  background-color: rgb(26, 38, 166);
+  height: 38px;
+  line-height: 38px;
+  background-color: rgb(166, 26, 64);
   width: 100%;
 }
 
 /*
  font-family: Roboto, "Helvetica Neue", sans-serif;
- font-family: Roboto, "Helvetica NeueThin", sans-serif;
+ font-family: Roboto, "Helvetica Neue Thin", sans-serif;
+   font-family: Roboto, "Helvetica Neue Std", sans-serif;
  */
 .nav-bar-text-link, .nav-bar-text-link:hover {
   color: white;
-  font-family: Roboto, "Helvetica NeueThin", sans-serif;
+  font-family: san-serif;
   text-decoration: none;
-  font-size: 18px;
-  margin-left: 18px;
+  font-size: 16px;
+  margin-left: 16px;
 }
 
+/**
+  background:#faf5fa;
+  background:#faf5fa;
+  font-family: Serif;
+  font-family: sans-serif;
+  font-family: Helvetica;
+*/
 body {
-    background: #f5f6fa;
+    font-family: san-serif;
+    background:#faf5fa;
     margin: 0px;
 }

@@ -39,7 +39,7 @@ class MyConfigObject:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.environ['SECRET_KEY']
 
-    PERMANENT_SESSION_LIFETIME = datetime.timedelta(minutes=3)  # flask-login with timeout
+    PERMANENT_SESSION_LIFETIME = datetime.timedelta(minutes=60)  # flask-login with timeout
     CORS_HEADERS = 'Content-Type'
     LOGIN_DISABLED = False
 

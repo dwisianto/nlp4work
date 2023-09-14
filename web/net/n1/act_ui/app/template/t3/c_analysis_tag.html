@@ -1,0 +1,36 @@
+{% extends "c_base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h1>{{ title }} - {{ user.username }} </h1>
+    <hr>
+
+    <nav class="nav">
+      <a class="nav-link active" aria-current="page" href="#">Sent</a>
+      <a class="nav-link" href="overview">Tag</a>
+    </nav>
+
+    <!--<table id="data" class="table table-striped">-->
+    <table id="analysis_table" class="table table-striped">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Txt</th>
+          <th>Tkn</th>
+          <th>Tag</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td> <span>{{item.snt_id}}</span> </td>
+          <td> <span>{{item.snt}}</span> </td>
+          <td> <span>{{item.tkn}}</span> </td>
+          <td> <span>{{item.tag}}</span> </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+{% endblock %}
