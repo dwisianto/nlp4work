@@ -8,7 +8,10 @@ import pytest
 import pathlib
 import datetime
 import pprint as pp
+from dotenv import load_dotenv
 
+load_dotenv()  # take environment variables from .env.
+#print(os.environ['MY_DAT'])
 
 #
 # Customization

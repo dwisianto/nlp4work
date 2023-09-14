@@ -1,7 +1,7 @@
 #!/opt/homebrew/Cellar/bash/5.2.9/bin/bash
 #!/bin/bash
 
-source act___/env_vars.sh
+source act___/dot_env.sh
 
 #
 # information
