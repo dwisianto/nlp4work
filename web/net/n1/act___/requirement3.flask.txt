@@ -15,4 +15,5 @@ requests
 # facelift
 bootstrap-flask
 #
+flask-cors
 faker
