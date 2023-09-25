@@ -1,0 +1,91 @@
+{% extends "c_base.html" %}
+
+
+{% block head_style %}
+<style type='text/css'>
+#analysis_div {
+   display: table;
+   width: 100%;
+}
+
+#analysis_form {
+   display: table-cell;
+   text-align: center;
+   vertical-align: middle;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='datatables/Bootstrap-5-5.3.0/css/bootstrap.min.css')}}" >
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='datatables/DataTables-1.13.6/css/dataTables.bootstrap5.css')}}" >
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static',filename='datatables/jQuery-3.7.0/jquery-3.7.0.min.js')}}"></script>
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static',filename='datatables/DataTables-1.13.6/js/jquery.dataTables.js')}}"></script>
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static',filename='datatables/DataTables-1.13.6/js/dataTables.bootstrap5.js')}}"></script>
+  <script type="text/javascript" charset="utf8" src="{{ url_for('static',filename='c_analysis_b1.js')}}"></script>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-7"></div>
+      <div class="col-4">
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Sample Text</label>
+          <select class="form-control" id="exampleFormControlSelect1">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-1"></div>
+    </div>
+    <div class="row">
+      <div class="col-2"></div>
+      <div class="col-8">
+        <div class="form-group">
+          <label>Unstructured Text</label>
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>
+        </div>
+      </div>
+      <div class="col-2"></div>
+    </div>
+    <div class="row">
+      <div class="col-9"></div>
+      <div class="col-2">
+        <button class="btn btn-primary">Close</button>
+        <button class="btn btn-primary">Save changes</button>
+      </div>
+      <div class="col-1"></div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-2"></div>
+      <div class="col-7">
+        <div class="form-group">
+          <label for="exampleFormControlSelect2">Example multiple select</label>
+          <select multiple class="form-control" id="exampleFormControlSelect2">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-1"></div>
+    </div>
+  </div>
+
+  <!--
+  <form>
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Email address</label>
+      <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+    </div>
+  </form>
+  -->
+{% endblock %}

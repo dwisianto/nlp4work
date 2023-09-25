@@ -1,12 +1,11 @@
-import json
-import os
+
+import os # import json
 
 from flask import Blueprint
 from flask import redirect
 from flask import render_template
 from flask import request
-from flask import url_for
-from flask import abort
+from flask import url_for # from flask import abort
 from flask import flash
 from flask import session  # flask-login timeout
 from flask import send_from_directory  # static directory to favicon.ico
@@ -23,6 +22,8 @@ from app.forms import LoginForm, TaleForm, AnalysisForm
 from app.models import User, Tale, Analysis
 from app.extensions import db
 from my_cfg import my_log, MyConfigObject
+
+from app.forms import TXT_CHOICES, KEYWORD_CHOICES
 
 #
 #
@@ -277,68 +278,94 @@ def narration_info_update():
 @login_required
 def analysis():
 
+    # filter by current_user
+    u0 = User.query.filter_by(username=current_user.username).first_or_404()
+    my_log.info(" feedback {} {} ".format(u0.id, u0.username))
+
+    #
+
+    form_default_page = 'c_analysis_a2.html'
+
+    #
+    #
+    #
+    if request.method == 'GET':
+        form = AnalysisForm()
+        return render_template(form_default_page, title='Analysis', form=form, user=current_user)
+    elif 'analyze_btn' in request.form.keys():
+
+        #if form.is_submitted(): #validate_on_submit():
+
+        #form.analysis_txt.data = dict(TXT_CHOICES).get(form.txt_slct.data)
+        #form.keyword_slct.data = dict(KEYWORD_CHOICES).get(form.txt_slct.data)
+
+        now_lst = []
+        now_txt = request.form['analysis_txt']
+        now_sent = nltk.sent_tokenize(now_txt)
+        for a_sentence_id in range(0,len(now_sent)):
+            a_sentence = now_sent[a_sentence_id]
+            a_snt_token = nltk.word_tokenize(a_sentence)
+            a_snt_tag   = nltk.pos_tag(a_snt_token)
+            a_snt_tag_df = pd.DataFrame(a_snt_tag)
+            a_snt_tag_df_dict = a_snt_tag_df.to_dict()
+            a_snt_tag0=a_snt_tag_df_dict[0].keys()
+            a_snt_tag1= list(a_snt_tag_df_dict[0].values())
+            a_snt_tag2= list(a_snt_tag_df_dict[1].values())
+            now_lst.append({'snt': a_sentence,
+                            'snt_id': a_sentence_id,
+                            'tkn': a_snt_token,
+                            'tag': a_snt_tag,
+                            'tag0': a_snt_tag0,
+                            'tag1': a_snt_tag1,
+                            'tag2': a_snt_tag2,
+                            }
+                           )
+        now_df = pd.DataFrame(now_lst)
+        my_log.info(now_df.to_json())
+
+        a0 = Analysis(author=u0,
+                      analysis_txt=now_txt,
+                      analysis_jsn=now_df.to_json()
+                    )
+        db.session.add(a0)
+        db.session.commit()
+
+        return render_template('c_analysis_snt.html',
+                               title='AnalysisReport',
+                               user=current_user,
+                               items=now_lst)
+    elif 'clear_btn' in request.form.keys():
+        form = AnalysisForm()
+        form.analysis_txt.data = ''
+        return render_template(form_default_page, title='Analysis', form=form, user=current_user)
+    elif 'txt_slct' in request.form.keys():
+        form = AnalysisForm()
+        form.analysis_txt.data = dict(TXT_CHOICES).get(form.txt_slct.data)
+        form.keyword_slct.data = form.txt_slct.data
+        form.keyword_str.data = dict(KEYWORD_CHOICES).get(form.txt_slct.data)
+        return render_template(form_default_page, title='Analysis2', form=form, user=current_user)
+
+    return render_template(form_default_page, title='Analysis', form = AnalysisForm(), user=current_user)
+
+
+
+
+@server_bp.route('/analysis/config', methods=['POST'])
+@login_required
+def analysis_config():
+
     #
     form = AnalysisForm()
+    form_default_page = 'c_analysis_a2.html'
 
-    #
-    # Clear Button
-    #
-    if 'clear_btn' in request.form.keys():
-        form.analysis_txt.data = ''
-        return render_template('c_analysis.html', title='Analysis', form=form)
+    if 'txt_slct' in request.form.keys():
+        form.analysis_txt.data = 'two'
+        return render_template(form_default_page, title='AnalysisConfig', form=form, user=current_user)
 
-    elif request.method == 'GET':
-
-        return render_template('c_analysis.html', title='Analysis', form=form)
-
-    elif request.method == 'POST':
-
-        if form.validate_on_submit():
-
-            now_lst = []
-            now_txt = form.analysis_txt.data
-            now_sent = nltk.sent_tokenize(now_txt)
-            for a_sentence_id in range(0,len(now_sent)):
-                a_sentence = now_sent[a_sentence_id]
-                a_snt_token = nltk.word_tokenize(a_sentence)
-                a_snt_tag   = nltk.pos_tag(a_snt_token)
-                a_snt_tag_df = pd.DataFrame(a_snt_tag)
-                a_snt_tag_df_dict = a_snt_tag_df.to_dict()
-                a_snt_tag0=a_snt_tag_df_dict[0].keys()
-                a_snt_tag1= list(a_snt_tag_df_dict[0].values())
-                a_snt_tag2= list(a_snt_tag_df_dict[1].values())
-                now_lst.append({'snt': a_sentence,
-                                'snt_id': a_sentence_id,
-                                'tkn': a_snt_token,
-                                'tag': a_snt_tag,
-                                'tag0': a_snt_tag0,
-                                'tag1': a_snt_tag1,
-                                'tag2': a_snt_tag2,
-                                }
-                               )
-            now_df = pd.DataFrame(now_lst)
-
-            # filter by current_user
-            u0 = User.query.filter_by(username=current_user.username).first_or_404()
-            my_log.info(" feedback {} {} ".format(u0.id, u0.username))
-            my_log.info(now_df.to_json())
-
-            a0 = Analysis(author=u0,
-                          analysis_txt=form.analysis_txt.data,
-                          analysis_jsn=now_df.to_json()
-                        )
-            db.session.add(a0)
-            db.session.commit()
-
-            return render_template('c_analysis_snt.html',
-                                   title='AnalysisReport',
-                                   user=current_user,
-                                   items=now_lst)
-
-    return render_template('c_analysis.html', title='Analysis', form=form)
-
-
-
+    return render_template(form_default_page,
+                           title='AnalysisConfig',
+                           form=form,
+                           user=current_user)
 
 
 
@@ -409,9 +436,6 @@ def analysis_report():
 
 
 
-@server_bp.route('/analysis_token', methods=['GET'])
-@login_required
-def analysis_token():
-    pass
+
 
 

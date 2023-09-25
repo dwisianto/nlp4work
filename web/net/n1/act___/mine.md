@@ -4,7 +4,17 @@
 ## 10
 
 
+
+
 ## 09
+
+
+### 01- MultiSelect HTML
+
+- https://stackoverflow.com/questions/21217475/get-selected-text-from-a-form-using-wtforms-selectfield
+- https://stackoverflow.com/questions/30190588/html-select-multiple-as-dropdown
+- https://www.jqueryscript.net/blog/best-multiple-select.html
+- https://www.geeksforgeeks.org/how-to-create-an-eye-catchy-multiselect-in-jquery/
 
 
 ### 14 Nested Table
