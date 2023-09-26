@@ -2,15 +2,16 @@
 #
 #
 #
-echo "ENV VARS:"
+echo " ===== ENV VARS ==== "
+
 
 #
+# CONDA
 #
-#
-MY_BASH="/opt/homebrew/Cellar/bash/5.2.9/bin/bash"
-MY_CONDA=$(which conda)
-echo "MY_BASH ${MY_BASH}"
-echo "MY_CONDA ${MY_CONDA}"
+ACD_BIN=$(which conda)
+ACD_ENV=p9net8
+echo ACD_BIN: ${ACD_BIN}
+echo ACD_ENV: ${ACD_ENV}
 
 #
 #

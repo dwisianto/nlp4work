@@ -1,0 +1,3 @@
+# conda create --name ${ACD_ENV} --clone base38
+#
+apache-airflow

@@ -131,7 +131,6 @@ tst(){
 
   case "$@" in
     ${arg} )
-
       eval "$($(which conda) 'shell.bash' 'hook')"
       conda activate ${ACD_ENV}
       which pytest
@@ -169,6 +168,9 @@ tst_path(){
       ;;
   esac
 }
+
+
+
 
 
 template(){
