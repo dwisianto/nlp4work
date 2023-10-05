@@ -6,8 +6,8 @@
 #
 # [] shortcuts to re-load variables and functions
 #
-alias af_src_='source ./act___/af.sh'
 alias af_env_='source ./act___/dot_env.sh'
+alias af_src_='source ./act_af/af.sh'
 # alias af_src_
 # alias af_env_
 
@@ -19,29 +19,35 @@ export ACD_BIN=$(which conda)  # conda executable binary
 export ACD_ENV=base38af27      # a working environment
 export ACD_ENV_BASE=base38     # a base env to clone from
 
-export ACD_PIP1=$(PWD)/act___/requirement1_pytest.txt
-export aCD_PIP2=$(PWD)/act___/requirement2.txt
-export aCD_PIP3=$(PWD)/act___/requirement3.txt
-export aCD_PIP4=$(PWD)/act___/requirement4.txt
-export ACD_PIP5=$(PWD)/act___/requirement5_airflow.txt
+export ACD_PIP1=${PWD}/act___/requirement1_pytest.txt
+export aCD_PIP2=${PWD}/act___/requirement2.txt
+export aCD_PIP3=${PWD}/act___/requirement3.txt
+export aCD_PIP4=${PWD}/act___/requirement4.txt
+export ACD_PIP5=${PWD}/act___/requirement5_airflow.txt
 
 
 #
 # [] AIRFLOW
 #
-#export AIRFLOW_HOME=/Users/dwyk/d2/s2/m6-/ve-/air39/flow1
-#export AIRFLOW_HOME=$HOME/d2/s3/m8/vsc/n4af9/af_homes/h1
-#export AIRFLOW_HOME=$af_home
-#export AF_VSC=$HOME/d2/s3/m8/vsc/n4af9
-#export AF_UID=n4af9
-#export AIRFLOW_HOME=/Users/dwyk/d2/s2/m6-/ve-/air39/flow1
+export AIRFLOW_HOME=${PWD}/act_af_home
+export AIRFLOW_CONFIG=${AIRFLOW_HOME}
+export PYTHONPATH=${AIRFLOW_HOME}:$PYTHONPATH
 
 
-export AIRFLOW_HOME=$(PWD)/act_af_home
-export AIRFLOW_DB=${AIRFLOW_HOME}
-export AIRFLOW_LOG=${AIRFLOW_HOME}/logs
-export AIRFLOW_DAG=${AIRFLOW_HOME}/dags
-export AIRFLOW_CFG_UI=${AIRFLOW_HOME}/webserver_config.cfg
+export AIRFLOW__CORE__DAGS_FOLDER=${AIRFLOW_HOME}/dags
+export AIRFLOW__CORE__PLUGINS_FOLDER=${AIRFLOW_HOME}/plugins
+export AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:///${AIRFLOW_HOME}/act_af_home/airflow.db
+export AIRFLOW__LOGGING__BASE_LOG_FOLDER=${AIRFLOW_HOME}/logs
+export AIRFLOW__LOGGING__DAG_PROCESSOR_MANAGER_LOG_LOCATION=${AIRFLOW_HOME}/logs/dag_processor_manager/dag_processor_manager.log
+export AIRFLOW__WEBSERVER__CONFIG_FILE=${AIRFLOW_HOME}/webserver_config.py
+export AIRFLOW__SCHEDULER__CHILD_PROCESS_LOG_DIRECTORY=${AIRFLOW_HOME}
+
+export AIRFLOW_DB=${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
+export AIRFLOW_LOG=${AIRFLOW__LOGGING__BASE_LOG_FOLDER}
+export AIRFLOW_DAG=${AIRFLOW__CORE__DAGS_FOLDER}
+export AIRFLOW_CFG_UI=${AIRFLOW__WEBSERVER__CONFIG_FILE}
+
+
 
 
 export AF_HOME=$AIRFLOW_HOME
@@ -58,9 +64,9 @@ export AF_DAG=${AIRFLOW_HOME}/dags
 #export af_home=$af_ops
 #export AIRFLOW_HOME=$af_home
 #export AF_HOME=$(PWD)
-export af_home=$(PWD)
+export af_home=${PWD}
 export af_db=${af_home}
-export af_log=${AF_LOG}
+export af_log=${af_home}/log
 export af_dag=${af_home}/act_af/dags
 export af_cfg=${af_home}/act_af/airflow.cfg
 export af_cfg_ui=${af_home}/webserver_config.cfg

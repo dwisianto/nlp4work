@@ -30,12 +30,18 @@ ACD(){
 }
 
 acd(){
-    echo "conda deactivate; conda activate ${ACD_ENV}; "
+  echo " "
+  echo " acd_ "
+  echo " acd_new_base "
+  echo " acd_new_base_ "
+  echo " acd_new_env "
+  echo " acd_new_env_ "
 }
 
 #  $(af_acd)
 acd_() {
   eval "$($(which conda) 'shell.bash' 'hook')"
+  conda deactivate; conda activate ${ACD_ENV};
   conda activate ${ACD_ENV}
 }
 
@@ -43,10 +49,11 @@ acd_() {
 # echo "# conda create --name base38 --clone base"
 acd_new_base() {
   eval "$($(which conda) 'shell.bash' 'hook')"
+  conda create --name ${ACD_ENV_BASE}
 }
 
 acd_new_base_() {
-  $(af_acd_new_base)
+  $(acd_new_base)
 }
 
 acd_new_env(){
@@ -54,15 +61,15 @@ acd_new_env(){
 }
 
 acd_new_env_(){
-  $(af_acd_new_env)
+  $(acd_new_env)
 }
 
-af_acd_del_env(){
+acd_del_env(){
   echo "conda env remove --name ${ACD_ENV}"
 }
 
-af_acd_del_env_(){
-  $(af_acd_del_env)
+acd_del_env_(){
+  $(acd_del_env)
 }
 
 
@@ -380,7 +387,7 @@ af_start_sch(){
 
 af_start_sch_(){
   eval "$($(which conda) 'shell.bash' 'hook')"
-  airflow scheduler
+  airflow scheduler &
 }
 
 af_start_web(){
@@ -391,7 +398,7 @@ af_start_web(){
 
 af_start_web_(){
   eval "$($(which conda) 'shell.bash' 'hook')"
-  airflow webserver --port $AIRFLOW_PORT
+  airflow webserver --port $AIRFLOW_PORT 1>
 }
 
 
