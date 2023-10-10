@@ -1,15 +1,21 @@
 
+
+import pandas as pd
+# from datetime import datetime as dt
+
 from dash import dash_table
 from dash.dependencies import Input, Output, State
 
 from flask_login import current_user
 
-import pandas as pd
-from datetime import datetime as dt
+from app.board.b9.a2.seed import board_id, board_user_store_id, board_button_submit_id, \
+    board_input_id, board_user_name_id, board_out_container_id, board_data_table_id
 
-#import logging
-#LOG = logging.getLogger(__name__)
-from my_cfg import my_log
+# import logging
+# LOG = logging.getLogger(__name__)
+# from my_cfg import my_log
+
+
 
 
 #
@@ -18,17 +24,17 @@ from my_cfg import my_log
 def register_callbacks(current_app):
 
     @current_app.callback(
-        Output('user-store', 'data'),
-        Input('input-on-submit', 'value'),
-        State('user-store', 'data'))
+        Output(board_user_store_id, 'data'),
+        Input(board_input_id, 'value'),
+        State(board_user_store_id, 'data'))
     def cur_user(args, data):
         if current_user.is_authenticated:
             return current_user.username
         else:
             return "Anonymous"
 
-    @current_app.callback(Output('username', 'children'), 
-                        Input('user-store', 'data'))
+    @current_app.callback(Output(board_user_name_id, 'children'),
+                        Input(board_user_store_id, 'data'))
     def username(data):
         if data is None:
             return ''
@@ -39,8 +45,8 @@ def register_callbacks(current_app):
     # State('input-on-submit', 'data')
     #def update_graph(selected_dropdown_value, value, data):
     @current_app.callback(
-        Output('my_data_table', 'children'),
-        Input('submit-val', 'n_clicks'),
+        Output(board_data_table_id, 'children'),
+        Input(board_button_submit_id, 'n_clicks'),
         )
     def update_graph(n_clicks):
 

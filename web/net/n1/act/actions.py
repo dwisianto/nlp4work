@@ -52,8 +52,10 @@ ACT_CONFIG = {
 
 
 class ActConfig:
-    # SQLITE_FILE_DIR = os.path.join(os.environ['MY_DAT'], 'xcl', 'c1a')
-    # SQLITE_FILE_NAME = 'cost_passages_2023_05_07.sqlite'
+
+    de_date, op_date = '2023_05_19a','2023_05_19a'
+    de_data, op_data = os.environ['MY_DAT'], os.environ['MY_DAT']
+
     # act_cfg='act___'
     # act_ts='act_ts'
     # act_ui='act_ui'
@@ -64,13 +66,52 @@ class ActConfig:
     tale_num_of_narrative = 15
     analysis_num_of_txt = 5
 
+    # DataFrame Columns
+    df_col_uid, df_col_file_name, df_col_keywords = 'uid', 'file_name', 'sentence_keyword'
+    df_col_score, df_col_text='score','text'
+
+    #
+    # Exploration Plotly Dash Board
+    #
+    # data_table_query_id='table'
+    # data_table_message_active_cell_id=
+    #
+    exploration_id_table='table'
+    exploration_id_message_active_cell='data_table_message_active_cell_id'
+    exploration_id_filter_file_name = 'file-name-filter'
+    exploration_id_filter_keyword = 'keyword-filter'
+    exploration_id_filter_sentence_text = 'sentence-text-filter'
+    exploration_id_filter_button_exe = 'button-exploration'
+
+
+    # SQLITE
+    # SQLITE_FILE_DIR = os.path.join(os.environ['MY_DAT'], 'xcl', 'c1a')
+    # SQLITE_FILE_NAME = 'cost_passages_2023_05_07.sqlite'
+    sqlite_search_query_id = 'sqlite_search_query_id'
+    sqlite_search_query_example_id = 'sqlite_search_query_example_id'
+    sqlite_search_query_value = 'SELECT * from comments'
+    sqlite_search_query_dropdown_id = 'sqlite_search_query_dropdown_id'
+    sqlite_search_query_cmd_id = 'sqlite_search_query_cmd_id'
+    sqlite_search_query_button_id = 'sqlite_search_button_id'
+    sqlite_search_query_example_button_id = 'sqlite_search_query_example_button_id'
+    sqlite_search_table_id= 'sqlite_search_table_id'
+    sqlite_search_message_id = 'sqlite_search_message_id'
+    sqlite_search_message_json_id = 'sqlite_search_message_json_id'
+
     def __init__(self, seed_dict):
         self.seed_dict=seed_dict
         for key in seed_dict:
             setattr(self, key, seed_dict[key])
 
-        self.act_ui_db_file=os.path.join(self.act_ui, ACT['ui_db_file'])
-        self.act_ui_db_dir=os.path.join(self.act_ui, ACT['ui_db_dir'])
+        self.act_ui_db_file = os.path.join(self.act_ui, ACT['ui_db_file'])
+        self.act_ui_db_dir = os.path.join(self.act_ui, ACT['ui_db_dir'])
+
+        self.out_xls_file_name = 'letters_'+self.op_date + '.xlsx'
+        self.sqlite_search_file_name = "comment_letter_search_"+self.op_date+ ".sqlite"
+
+        self.app_in_dir = self.dat_dir
+        self.app_in_xlsx = os.path.join(self.app_in_dir, self.out_xls_file_name)
+        self.app_in_fts  = os.path.join(self.app_in_dir, self.sqlite_search_file_name)
 
     def __str__(self):
         return str(self.seed_dict)

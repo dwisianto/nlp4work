@@ -1,11 +1,11 @@
 
 from dash import dcc
 from dash import html
-from dash import dash_table
-import dash_bootstrap_components as dbc
+# from dash import dash_table
+# import dash_bootstrap_components as dbc
 
 
-from app.board.navigator import nav_menu
+# from app.board.navigator import nav_menu
 
 #    nav_menu,
 # html.A("Home", href='http://localhost:5000'),

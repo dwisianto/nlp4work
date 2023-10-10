@@ -4,8 +4,8 @@
    background-color: rgb(26, 38, 166);
 */
 header {
-  height: 38px;
-  line-height: 38px;
+  height: 30px;
+  line-height: 30px;
   background-color: rgb(166, 26, 64);
   width: 100%;
 }
@@ -26,12 +26,12 @@ header {
 /**
   background:#faf5fa;
   background:#faf5fa;
+  background:#faf5fa;
   font-family: Serif;
   font-family: sans-serif;
   font-family: Helvetica;
 */
 body {
     font-family: san-serif;
-    background:#faf5fa;
     margin: 0px;
 }

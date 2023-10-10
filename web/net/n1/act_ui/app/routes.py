@@ -31,6 +31,9 @@ from app.forms import TXT_CHOICES, KEYWORD_CHOICES
 import nltk
 import pandas as pd
 
+import logging
+LOGGER = logging.getLogger(__name__)
+
 #
 #
 #
@@ -99,6 +102,12 @@ def logout():
 @login_required
 def exploration():
     return render_template('c_dash.html', dash_url='/board30/')
+
+
+@server_bp.route('/search/')
+@login_required
+def search():
+    return render_template('c_dash.html', dash_url='/board60/')
 
 
 @server_bp.route('/feedback4/', methods=['GET', 'POST'])
@@ -227,6 +236,7 @@ def narration_info():
     }
 
 
+
 @server_bp.route('/narration/info', methods=['POST'])
 @login_required
 def narration_info_update():
@@ -272,19 +282,54 @@ def narration_info_update():
 
     return '', response_code
 
+
+from nltk.chunk import *
+from nltk.chunk.util import *
+from nltk.chunk.regexp import *
+from nltk import Tree
+
+# https://www.nltk.org/book/ch07.html
+# https://www.nltk.org/howto/chunk.html
+class Nltk_Chunker():
+
+    @staticmethod
+    def get_noun_phrase(in_txt_snt):
+        grammar = "NP: {<DT>?<JJ>*<NN>}"
+        a_parser = nltk.RegexpParser(grammar)
+        a_forest = a_parser.parse(in_txt_snt)
+        #for subtree in a_forest.subtrees():
+        #for subtree in a_forest:
+        #     LOGGER.info(subtree)
+        #if subtree.label() == 'NP':
+        #    print( subtree)
+
+        return a_forest
+
+    @staticmethod
+    def get_phrases(in_txt_snt):
+        chunk_rule = ChunkRule(r"<.*>+", "Chunk everything")
+        strip_rule = StripRule(r"<VBD|IN|\.>", "Strip on verbs/prepositions")
+        split_rule = SplitRule("<DT><NN>", "<DT><NN>","Split successive determiner/noun pairs")
+        chunk_parser = RegexpChunkParser([chunk_rule, strip_rule, split_rule, ],
+                                         chunk_label='NP')
+        chunked_text = chunk_parser.parse(in_txt_snt)
+        return chunked_text
+
+
+
 # https://www.nltk.org/howto/chunk.html
 # https://stackoverflow.com/questions/10929941/make-drag-and-drop-uploader-in-flask
 @server_bp.route('/analysis', methods=['GET','POST'])
 @login_required
 def analysis():
 
+    #
+    form_default_page = 'c_analysis_a2.html'
+
     # filter by current_user
     u0 = User.query.filter_by(username=current_user.username).first_or_404()
     my_log.info(" feedback {} {} ".format(u0.id, u0.username))
 
-    #
-
-    form_default_page = 'c_analysis_a2.html'
 
     #
     #
@@ -294,18 +339,16 @@ def analysis():
         return render_template(form_default_page, title='Analysis', form=form, user=current_user)
     elif 'analyze_btn' in request.form.keys():
 
-        #if form.is_submitted(): #validate_on_submit():
-
-        #form.analysis_txt.data = dict(TXT_CHOICES).get(form.txt_slct.data)
-        #form.keyword_slct.data = dict(KEYWORD_CHOICES).get(form.txt_slct.data)
-
         now_lst = []
         now_txt = request.form['analysis_txt']
+        now_keyword = request.form['keyword_str']
         now_sent = nltk.sent_tokenize(now_txt)
         for a_sentence_id in range(0,len(now_sent)):
             a_sentence = now_sent[a_sentence_id]
             a_snt_token = nltk.word_tokenize(a_sentence)
             a_snt_tag   = nltk.pos_tag(a_snt_token)
+            a_snt_phrases_tree = Nltk_Chunker.get_phrases(a_snt_tag)
+            a_snt_chunker = ' '.join(str(a_snt_phrases_tree).split())
             a_snt_tag_df = pd.DataFrame(a_snt_tag)
             a_snt_tag_df_dict = a_snt_tag_df.to_dict()
             a_snt_tag0=a_snt_tag_df_dict[0].keys()
@@ -318,6 +361,7 @@ def analysis():
                             'tag0': a_snt_tag0,
                             'tag1': a_snt_tag1,
                             'tag2': a_snt_tag2,
+                            'chnk': a_snt_chunker,
                             }
                            )
         now_df = pd.DataFrame(now_lst)
@@ -433,9 +477,4 @@ def analysis_report():
                            title='AnalysisReport',
                            user=current_user,
                            items=out_lst)
-
-
-
-
-
 

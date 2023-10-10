@@ -1,0 +1,23 @@
+    <!--
+    <script type="text/javascript" charset="utf8" src="{{ url_for('static',filename='h1a.js')}}"></script>
+    <script type="text/javascript" charset="utf8" src="{{ url_for('static',filename='h1b.js')}}"></script>
+    <script type="text/javascript" charset="utf8" src="{{ url_for('static',filename='h1c.js')}}"></script>
+    <script type="text/javascript" charset="utf8" src="{{ url_for('static',filename='h1d.js')}}"></script>
+    <script type="text/javascript" charset="utf8" src="{{ url_for('static',filename='h1e.js')}}"></script>
+    -->
+
+    <!--
+      <script>
+        $(document).ready(function () {
+          $('#analysis_table2').DataTable({
+            ajax: '/analysis/info',
+            select: true,
+            columns: [
+              {data: 'analysis_id'},
+              {data: 'analysis_txt', searchable: false},
+              {data: 'user_id'}
+            ],
+          });
+        });
+      </script>
+    -->

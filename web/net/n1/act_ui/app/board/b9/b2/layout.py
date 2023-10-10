@@ -2,7 +2,7 @@
 from dash import dcc, html, dash_table
 import dash_bootstrap_components as dbc
 
-from app.board.navigator import nav_menu
+# from app.board.navigator import nav_menu
 #    nav_menu,
 # html.A("Home", href='http://localhost:5000'),
 layout = html.Div(id='board3', children=[

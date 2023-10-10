@@ -6,6 +6,7 @@ export ACD_BIN=$(which conda)
 export FLASK_APP=my_app
 #export FLASK_ENV=development
 export FLASK_DEBUG=1
+export FLASK_PORT=7007
 export DATABASE_URL=sqlite:///${PWD}/act_ui/my_app.sqlite
 export SECRET_KEY=my_secret
 export PYTHONPATH=${PWD}:$PYTHONPATH
@@ -28,3 +29,7 @@ echo DATABASE_URL: ${DATABASE_URL}
 echo
 echo PYTHONPATH: ${PYTHONPATH}
 echo
+
+export ACT_TOP=${PWD}/../../../
+
+export MY_DAT=${ACT_TOP}/dat/net/n1

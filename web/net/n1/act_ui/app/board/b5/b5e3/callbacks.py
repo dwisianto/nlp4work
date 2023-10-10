@@ -21,7 +21,7 @@ def register_callbacks(current_app):
         if current_user.is_authenticated:
             return current_user.username
 
-    @current_app.callback(Output('username', 'children'), 
+    @current_app.callback(Output('username', 'children'),
                         Input('user-store', 'data'))
     def username(data):
         if data is None:
@@ -29,22 +29,21 @@ def register_callbacks(current_app):
         else:
             return f'Dash Table - {data}'
 
-
-    # State('input-on-submit', 'data')
-    #def update_graph(selected_dropdown_value, value, data):
-    @current_app.callback(
-        Output('my_data_table', 'children'),
-        Input('submit-val', 'n_clicks'),
+        # State('input-on-submit', 'data')
+        # def update_graph(selected_dropdown_value, value, data):
+        @current_app.callback(
+            Output('my_data_table', 'children'),
+            Input('submit-val', 'n_clicks'),
         )
-    def update_graph(n_clicks):
-        
-        out_data_table = None
-        if n_clicks >= 1:
-            #my_config_util.SEED_DF
-            #df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
-            out_data_table = dash_table.DataTable(my_config_util.SEED_DF.to_dict('records'))
-        
-        return out_data_table
+        def update_graph(n_clicks):
+
+            out_data_table = None
+            if n_clicks >= 1:
+                # my_config_util.SEED_DF
+                # df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
+                out_data_table = dash_table.DataTable(my_config_util.SEED_DF.to_dict('records'))
+
+            return out_data_table
         #return(n_clicks)
 
 

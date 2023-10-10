@@ -1,0 +1,30 @@
+    @current_app.callback( [Output('data-table-query-id','data'),
+                    Output('author-filter','options')],
+                  [Input('date-picker-range','start_date'),
+                   Input('date-picker-range','end_date'),
+                   Input('date-picker-range','end_date'),
+                   Input('date-picker-range','end_date'),
+                   ])
+    def update_table(start_date, end_date,
+                     author_filter_value,
+                     sentence_text_filter_value):
+
+        tmp_df = board_df.sort_values("date").set_index("date")[start_date:end_date]
+        tmp_df = tmp_df.reset_index()
+        tmp_df['date'] = pd.DatetimeIndex( tmp_df['date'] ).strftime("%Y-%m-%d")
+
+        # Text Filter
+        if sentence_text_filter_value:
+            tmp_df = tmp_df[tmp_df['sentence_text'].str.contains(sentence_text_filter_value)]
+
+        if author_filter_value:
+            tmp_df = tmp_df[tmp_df['author'].isin(author_filter_value)]
+
+        tmp_author_list = list(set(tmp_df['author']))
+        tmp_author_list_dict = [{'label':x,'value':x} for x in tmp_author_list]
+
+        return tmp_df.to_dict('records'), tmp_author_list_dict
+
+
+
+    # def update_graph(selected_dropdown_value, value, data):

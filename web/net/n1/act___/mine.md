@@ -3,6 +3,9 @@
 
 ## 10
 
+### 01 Full Text Search
+
+- file:///Users/dwyk/Downloads/sqlite_fts5.pdf
 
 
 

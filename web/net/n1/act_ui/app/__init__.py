@@ -28,15 +28,24 @@ def create_app():
     # [] extension
     register_extensions(server)
 
-    # [] register dash app
-    b3_title = 'Board3'
-    from app.board.b3.layout import layout as b3_layout
-    from app.board.b3.callbacks import register_callbacks as b3_callbacks
+    # [] register plotly dash boards
+    dash1_title = 'Board3'
+    from app.board.b7.b71.layout import layout as dash1_layout
+    from app.board.b7.b71.callbacks import register_callbacks as dash1_callbacks
     register_dash_view(flask_server=server,
-                       title=b3_title,
-                       base_pathname=b3_title.lower()+'0',
-                       layout=b3_layout,
-                       callback_func_list=[b3_callbacks])
+                       title=dash1_title,
+                       base_pathname=dash1_title.lower()+'0',
+                       layout=dash1_layout,
+                       callback_func_list=[dash1_callbacks])
+
+    dash2_title = 'Board6'
+    from app.board.b7.b72.layout import layout as dash2_layout
+    from app.board.b7.b72.callbacks import register_callbacks as dash2_callbacks
+    register_dash_view(flask_server=server,
+                       title=dash2_title,
+                       base_pathname=dash2_title.lower()+'0',
+                       layout=dash2_layout,
+                       callback_func_list=[dash2_callbacks])
 
     # [] blueprint
     register_blueprints(server)
@@ -99,10 +108,10 @@ def register_dash_view(
         __name__,
         server=flask_server,
         url_base_pathname=f'/{base_pathname}/',
-        assets_folder=get_root_path(__name__) + '/static/',
-        meta_tags=[ register_dash_view_with_meta_viewport],
+        assets_folder=get_root_path(__name__) + '/static/s0',
+        meta_tags=[register_dash_view_with_meta_viewport],
         external_stylesheets=[dbc.themes.BOOTSTRAP],
-        # external_scripts=[],
+        #external_scripts=[],
     )
 
     with flask_server.app_context():

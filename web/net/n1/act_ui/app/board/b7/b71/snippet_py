@@ -1,0 +1,74 @@
+    dbc.Col([
+        html.P("Date Filter:"),
+        dcc.DatePickerRange(
+            id='date-picker-range',
+            min_date_allowed=min_date,
+            max_date_allowed=max_date,
+            initial_visible_month=min_date,
+            start_date=min_date,
+            end_date=max_date,
+        ),
+    ], width=4),
+
+
+dbc.Col([
+            html.P("Date Filter:"),
+            dcc.DatePickerRange(
+                id='date-picker-range',
+                min_date_allowed=min_date,
+                max_date_allowed=max_date,
+                initial_visible_month=min_date,
+                start_date=min_date,
+                end_date=max_date,
+            ),
+], width = 4),
+
+
+
+# ,'fontWeight':'bold'
+app_layout_row_data_table=dbc.Row(
+    [
+        dbc.Col(
+            [
+                html.Div([html.H5('Data Table'),
+                          dash_table.DataTable(
+                              id=act_conf.data_table_query_id,
+                              style_header={'backgroundColor':'rgb(255,204,204)', 'color':'rgb(255,255,255)' },
+                              #sytle_cell_conditional=[ ],
+                              style_cell={},
+                              columns=[{'name': i, 'id': i} for i in board_df.columns ],
+                              data= board_df.to_dict('records'),
+                              page_size=10,
+                              export_format='xlsx'
+                          )]),
+            ],
+            width=True,
+        ),
+    ],
+    align=True,
+)
+
+
+
+# ,'fontWeight':'bold'
+app_layout_row_data_table=dbc.Row(
+    [
+        dbc.Col(
+            [
+                html.Div([html.H5('Data Table'),
+                          dash_table.DataTable(
+                              id=act_conf.data_table_query_id,
+                              style_header={'backgroundColor':'rgb(255,204,204)', 'color':'rgb(255,255,255)' },
+                              #sytle_cell_conditional=[ ],
+                              style_cell={},
+                              columns=[{'name': i, 'id': i} for i in board_df.columns ],
+                              data= board_df.to_dict('records'),
+                              page_size=10,
+                              export_format='xlsx'
+                          )]),
+            ],
+            width=True,
+        ),
+    ],
+    align=True,
+)

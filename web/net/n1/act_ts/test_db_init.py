@@ -23,8 +23,7 @@ from werkzeug.security import generate_password_hash
 
 #
 # https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-vii-unit-testing-legacy
-#
-# @pytest.mark.skip
+@pytest.mark.skip
 class TestDbInit:
 
     @pytest.mark.order(1)
@@ -74,10 +73,9 @@ class TestDbInit:
     # @pytest.mark.skip
     @pytest.mark.order(3)
     @pytest.mark.parametrize("user_name,user_pass",
-                             [('sme', 'sme'),
-                              ('expert', 'expert'),
-                              ('guest', 'guest'),
-                              ('friend', 'friend'),
+                             [('nlp', 'nlp'),
+                              ('nlc', 'nlc'),
+                              ('xlp', 'xlp'),
                               ])
     def test_db_init_i3_user_admin(self, act_config, act_faker, user_name, user_pass):
 

@@ -69,7 +69,8 @@ def my_config(request):
 
     # ds1
     my_dict = {'time_now': f"{datetime.datetime.now().strftime('%Y%m%dT_%H%M%S')}",
-               'test_name': str(request.function.__name__)
+               'test_name': str(request.function.__name__),
+               'fdrive':'/Users/dwyk/d2/s3/m8/vsc/n4ui/n4ui9/n4ui9_dev/web/dat/net/n1/s70423',
                }
     my_dict.update(ACT_CONFIG)
 
